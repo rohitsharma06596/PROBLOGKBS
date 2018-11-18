@@ -2,6 +2,7 @@ package kbs.problog.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import kbs.problog.model.FactModel;
 import kbs.problog.model.PredicateModel;
+import kbs.problog.model.ProgramModel;
 import kbs.problog.model.RulesModel;
 
 // TODO: Auto-generated Javadoc
@@ -25,9 +27,15 @@ public class ParseController {
 	
 	/** The r. */
 	RulesModel r = new RulesModel();
+	
+	/** The rules. */
+	List<RulesModel> rules = new ArrayList<RulesModel>();
 
 	/** The p. */
 	PredicateModel p = new PredicateModel();
+	
+	/** The prog. */
+	ProgramModel prog = new ProgramModel();
 
 	/**
 	 * Rule.
@@ -36,7 +44,6 @@ public class ParseController {
 	 */
 	public void rule(String line) {
 		rule_get_head(line);
-		rule_get_body(line);
 	}
 
 	/**
@@ -91,6 +98,15 @@ public class ParseController {
 		prob = prob.substring(0, prob.length() - 1);
 		p.setProbability(Double.parseDouble(prob));
 		r.addHead(p);
+		if(!(p.getPredName().equals(null)))
+		{
+			rule_get_body(line);
+		}
+		else
+		{
+			System.out.println("One of the rule does not have a head");
+		}
+			
 		// System.out.println(p);
 
 	}
@@ -134,19 +150,23 @@ public class ParseController {
 
 		String line;
 		File fileInput = new File(current_Path + File.separator + "input.txt");
-
+		
 		BufferedReader in_buf = new BufferedReader(new FileReader(fileInput));
-
 		while ((line = in_buf.readLine()) != null) {
 
 			if (line.contains(":-")) {
 				rule(line);
+				rules.add(r);
+				prog.setRuleslist(rules);
+				prog.setFacts(f);
+				r = new RulesModel();
 			} else {
 				fact(line);
 			}
 		}
-
+		prog.setRuleslist(rules);
 		in_buf.close();
+		new InferenceController(prog);
 	}
 
 }
