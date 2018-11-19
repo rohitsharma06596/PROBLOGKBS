@@ -1,6 +1,7 @@
 package kbs.problog.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import kbs.problog.model.FactModel;
@@ -77,8 +78,20 @@ public class InferenceController {
 				System.out.println(outerList);
 
 			}
+			
 
 		}
 
+	}
+	public boolean predicateMatching(PredicateModel parmPred, FactModel parmFact)
+	{
+		HashMap<String, String> tempMap = new HashMap<>();
+		if((parmPred.getArity() != parmFact.getFact().getArity()) && (!parmPred.getPredName().equals(parmFact.getFact().getPredName())))
+			return false;
+		else
+		{
+			
+		}
+		return false;
 	}
 }

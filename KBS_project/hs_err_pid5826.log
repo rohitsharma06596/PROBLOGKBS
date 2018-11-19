@@ -1,0 +1,21 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007fa7ebdfc3a2, pid=5826, tid=5848
+#
+# JRE version: OpenJDK Runtime Environment (10.0.2+13) (build 10.0.2+13-Ubuntu-1ubuntu0.18.04.3)
+# Java VM: OpenJDK 64-Bit Server VM (10.0.2+13-Ubuntu-1ubuntu0.18.04.3, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x23a2]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport %p %s %c %d %P" (or dumping to /home/rohit/Git/PROBLOGKBS/KBS_project/core.5826)
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:38621 -javaagent:/home/rohit/.eclipse/360744347_linux_gtk_x86_64/configuration/org.eclipse.osgi/232/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 kbs.problog.controller.Driver
+
+Host: 
