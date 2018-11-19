@@ -60,12 +60,5 @@ public class RulesModel {
 	public void addHead(PredicateModel p) {
 		this.head = p;
 	}
-//	public double getProbability() {
-//		return probability;
-//	}
-//	public void setProbability(Double probability) {
-//		this.probability = probability;
-//	}
-//	
 
 }

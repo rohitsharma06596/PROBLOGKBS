@@ -30,6 +30,7 @@ public class ParseController {
 	
 	/** The rules. */
 	List<RulesModel> rules = new ArrayList<RulesModel>();
+	List<FactModel> facts = new ArrayList<FactModel>();
 
 	/** The p. */
 	PredicateModel p = new PredicateModel();
@@ -70,7 +71,7 @@ public class ParseController {
 		String prob = line.substring(line.indexOf(": ") + 1);
 		prob = prob.substring(0, prob.length() - 1);
 		p.setProbability(Double.parseDouble(prob));
-		f.addfact(p);
+		f.setFact(p);
 	}
 
 	/**
@@ -158,13 +159,18 @@ public class ParseController {
 				rule(line);
 				rules.add(r);
 				prog.setRuleslist(rules);
-				prog.setFacts(f);
+			//	System.out.println(r.getBody());
+			//	prog.setFacts(f);
 				r = new RulesModel();
 			} else {
 				fact(line);
+				facts.add(f);
+			//	System.out.println(f.getFact());
+				f = new FactModel();
 			}
 		}
-		prog.setRuleslist(rules);
+	//	prog.setRuleslist(rules);
+		prog.setFacts(facts);
 		in_buf.close();
 		new InferenceController(prog);
 	}

@@ -12,10 +12,10 @@ public class ProgramModel {
 	private List<RulesModel> ruleslist;
 	
 	/** The facts. */
-	private FactModel edb;
+	private List<FactModel> edb;
 	
 	/** The idb. */
-	private FactModel idb;
+	private List<FactModel> idb;
 
 	/**
 	 * Gets the ruleslist.
@@ -40,7 +40,7 @@ public class ProgramModel {
 	 *
 	 * @return the facts
 	 */
-	public FactModel getFacts() {
+	public List<FactModel> getFacts() {
 		return edb;
 	}
 
@@ -49,8 +49,8 @@ public class ProgramModel {
 	 *
 	 * @param facts the new facts
 	 */
-	public void setFacts(FactModel facts) {
-		this.edb = facts;
+	public void setFacts(List<FactModel> facts) {
+		edb = facts;
 	}
 
 }

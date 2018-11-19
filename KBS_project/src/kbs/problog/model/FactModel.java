@@ -10,14 +10,13 @@ import java.util.List;
 public class FactModel {
 
 	/** The fact. */
-	private List<PredicateModel> fact = new ArrayList<PredicateModel>();
-
+	private PredicateModel fact;
 	/**
 	 * Gets the fact.
 	 *
 	 * @return the fact
 	 */
-	public List<PredicateModel> getFact() {
+	public PredicateModel getFact() {
 		return fact;
 	}
 
@@ -26,7 +25,7 @@ public class FactModel {
 	 *
 	 * @param fact the new fact
 	 */
-	public void setFact(List<PredicateModel> fact) {
+	public void setFact(PredicateModel fact) {
 		this.fact = fact;
 	}
 
@@ -35,7 +34,5 @@ public class FactModel {
 	 *
 	 * @param p the p
 	 */
-	public void addfact(PredicateModel p) {
-		fact.add(p);
-	}
+	
 }
