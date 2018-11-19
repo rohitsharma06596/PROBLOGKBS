@@ -25,6 +25,10 @@ public class PredicateModel {
 	 *
 	 * @return the pred name
 	 */
+	public PredicateModel()
+	{
+		
+	}
 	public String getPredName() {
 		return predName;
 	}

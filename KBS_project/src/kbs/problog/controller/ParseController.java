@@ -2,7 +2,6 @@ package kbs.problog.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,20 +20,16 @@ public class ParseController {
 
 	/** The Constant current_Path. */
 	public static final String current_Path = System.getProperty("user.dir");
-	
+
 	/** The f. */
 	FactModel f = new FactModel();
-	
+
 	/** The r. */
-	RulesModel r = new RulesModel();
-	
+	RulesModel r = new RulesModel(); 
 	/** The rules. */
 	List<RulesModel> rules = new ArrayList<RulesModel>();
 	List<FactModel> facts = new ArrayList<FactModel>();
 
-	/** The p. */
-	PredicateModel p = new PredicateModel();
-	
 	/** The prog. */
 	ProgramModel prog = new ProgramModel();
 
@@ -55,7 +50,8 @@ public class ParseController {
 	public void fact(String line) {
 
 		String pname = line.substring(0, line.indexOf("("));
-		p.setPredName(pname);
+		PredicateModel p1 = new PredicateModel();
+		p1.setPredName(pname);
 
 		String value = line.substring(line.indexOf("(") + 1, line.indexOf(")")).replaceAll("\\s+", "");
 
@@ -66,12 +62,13 @@ public class ParseController {
 			listToken.add(token[i]);
 		}
 
-		p.setArguments(listToken);
-		p.setArity(listToken.size());
+		p1.setArguments(listToken);
+		p1.setArity(listToken.size());
 		String prob = line.substring(line.indexOf(": ") + 1);
 		prob = prob.substring(0, prob.length() - 1);
-		p.setProbability(Double.parseDouble(prob));
-		f.setFact(p);
+		p1.setProbability(Double.parseDouble(prob));
+		f.setFact(p1);
+
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class ParseController {
 	 * @param line the line
 	 */
 	public void rule_get_head(String line) {
-
+		PredicateModel p = new PredicateModel();
 		String pname = line.substring(0, line.indexOf("("));
 		p.setPredName(pname);
 
@@ -99,16 +96,9 @@ public class ParseController {
 		prob = prob.substring(0, prob.length() - 1);
 		p.setProbability(Double.parseDouble(prob));
 		r.addHead(p);
-		if(!(p.getPredName().equals(null)))
-		{
+		if (!(p.getPredName().equals(null))) {
 			rule_get_body(line);
 		}
-		else
-		{
-			System.out.println("One of the rule does not have a head");
-		}
-			
-		// System.out.println(p);
 
 	}
 
@@ -151,7 +141,7 @@ public class ParseController {
 
 		String line;
 		File fileInput = new File(current_Path + File.separator + "input.txt");
-		
+
 		BufferedReader in_buf = new BufferedReader(new FileReader(fileInput));
 		while ((line = in_buf.readLine()) != null) {
 
@@ -159,17 +149,20 @@ public class ParseController {
 				rule(line);
 				rules.add(r);
 				prog.setRuleslist(rules);
-			//	System.out.println(r.getBody());
-			//	prog.setFacts(f);
+
 				r = new RulesModel();
 			} else {
 				fact(line);
 				facts.add(f);
-			//	System.out.println(f.getFact());
 				f = new FactModel();
 			}
 		}
-	//	prog.setRuleslist(rules);
+		for (int i = 0; i < rules.size(); i++) {
+			System.out.println(rules.get(i).getHead());
+		}
+		for (int i = 0; i < facts.size(); i++) {
+			System.out.println(facts.get(i).getFact());
+		}
 		prog.setFacts(facts);
 		in_buf.close();
 		new InferenceController(prog);
