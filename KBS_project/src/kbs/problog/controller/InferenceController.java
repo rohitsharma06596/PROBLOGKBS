@@ -90,8 +90,25 @@ public class InferenceController {
 			return false;
 		else
 		{
-			
+			for( int i = 0 ; i< parmPred.getArity();i++)
+			{
+				if((tempMap.get(parmPred.getArguments().get(i))).equals(null))
+				{
+					tempMap.put(parmPred.getArguments().get(i), parmFact.getFact().getArguments().get(i));	
+				}
+				else
+				{
+					if(tempMap.get(parmPred.getArguments().get(i)).equals(parmFact.getFact().getArguments().get(i)))
+					{
+						continue;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 }
