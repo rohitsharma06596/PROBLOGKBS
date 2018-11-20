@@ -14,6 +14,7 @@ public class InferenceController {
 	int matchCount;
 	HashMap<String, String> tempMap = new HashMap<>();
 	HashMap<String, String> tempMap0 = new HashMap<>();
+	int factSize;
 	int i, j, k=0;
 	boolean mat;
 	int bodySize;
@@ -21,7 +22,7 @@ public class InferenceController {
 
 	public InferenceController(ProgramModel program) {
 		this.program = program;
-		
+		factSize = program.getFacts().size();
 		bodySize = program.getRuleslist().get(0).getBody().size();
 		probArr = new int[bodySize];
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
@@ -40,6 +41,7 @@ public class InferenceController {
 		{
 			for( int i = 0 ; i< parmPred.getArity();i++)
 			{
+				try {
 				if((tempMap.get(parmPred.getArguments().get(i))).equals(null))
 				{
 					tempMap.put(parmPred.getArguments().get(i), parmFact.getArguments().get(i));	
@@ -56,9 +58,16 @@ public class InferenceController {
 					}
 				}
 			}
-		}
+			catch(NullPointerException e)
+			{
+				System.out.println("Our hash map is empty");
+				tempMap.put(parmPred.getArguments().get(i), parmFact.getArguments().get(i));	
+				
+				}
+			}
 		matchCount++;
 		return true;
+		}
 	}
 
 	public void match(PredicateModel p, PredicateModel f) {
@@ -78,6 +87,28 @@ public class InferenceController {
 		if(mat && matchCount==bodySize)
 		{
 			InferIDB(program.getRuleslist().get(i).getHead(),probArr);
+			while(k<factSize-1)
+			{
+				tempMap = tempMap0;
+				k++;
+				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
+			}
+			if(k==factSize)
+			{
+				j = j-1;
+				k=0;
+				if(j<0)
+				{
+					i=i+1;
+					if(i==program.getRuleslist().size())
+					{
+						return;
+					}
+					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
+					bodySize = program.getRuleslist().get(i).getBody().size();
+					j=0;
+				}
+			}
 		}
 		
 		
