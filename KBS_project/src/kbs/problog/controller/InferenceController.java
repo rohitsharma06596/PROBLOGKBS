@@ -26,6 +26,11 @@ public class InferenceController {
 		probArr = new int[bodySize];
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
 	}
+	
+	public void InferIDB(PredicateModel p,int [] prob)
+	{
+		
+	}
 	public boolean predicateMatching(PredicateModel parmPred, PredicateModel parmFact)
 	{
 		
