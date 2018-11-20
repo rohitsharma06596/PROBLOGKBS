@@ -1,5 +1,6 @@
 package kbs.problog.model;
 
+import java.util.HashMap;
 import java.util.List;
 
 // TODO: Auto-generated Javadoc
@@ -17,7 +18,7 @@ public class ProgramModel {
 	/** The idb. */
 	private List<FactModel> idb;
 
-	/**
+	/*
 	 * Gets the ruleslist.
 	 *
 	 * @return the ruleslist
