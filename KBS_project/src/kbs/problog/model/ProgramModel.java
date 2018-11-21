@@ -53,5 +53,9 @@ public class ProgramModel {
 	public void setFacts(List<FactModel> facts) {
 		edb = facts;
 	}
+	public void setIdb(IdbModel parmIdb)
+	{
+		this.idb.add(parmIdb);
+	}
 
 }
