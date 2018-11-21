@@ -1,8 +1,11 @@
 package kbs.problog.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.*;
 
 import kbs.problog.model.FactModel;
 import kbs.problog.model.IdbModel;
@@ -164,37 +167,61 @@ public class InferenceController {
 	 *
 	 * @param parmidb the parmidb
 	 */
-	public void finalise_Idb(IdbModel parmidb) {
+	public double disjunction(double p1, double p2)
+	{
+		return (p1+p2)-(p1*p2);
+	}
+	public void finalise_Idb() {
 
+		for(int j=0;j<program.getIdb().size();i++)
+		{
 		int i = 0;
 
-		while (parmidb.getProb_fact().size() > 1) {
-			Double new_prob = ((parmidb.getProb_fact().get(i) + parmidb.getProb_fact().get(i + 1))
-					- (parmidb.getProb_fact().get(i) * parmidb.getProb_fact().get(i + 1)));
-			parmidb.getProb_fact().remove(i);
-			parmidb.getProb_fact().remove(i);
-			parmidb.getProb_fact().add(new_prob);
+		while (program.getIdb().get(j).getProb_fact().size() > 1) {
+			Double new_prob = disjunction(program.getIdb().get(j).getProb_fact().get(i),program.getIdb().get(j).getProb_fact().get(i+1));
+			program.getIdb().get(j).getProb_fact().remove(i);
+			program.getIdb().get(j).getProb_fact().remove(i);
+			program.getIdb().get(j).getProb_fact().add(new_prob);
+		}
 		}
 	}
 
 	public void inferIDB(PredicateModel head, List<Double> prob) {
+		
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
+		Double[] probability = prob.toArray(new Double[prob.size()]);
+		Arrays.sort(probability);
+		Double minProb = probability[0];
+		Double aggProb = minProb * head.getProbability();
+		tempFact.getFact().setProbability(aggProb);
 		IdbModel tempIdb;
+		
 		List<String> argundv = new ArrayList<>();
-		for (int i = 0; i < tempFact.getFact().getArity(); i++) {
-			argundv.add(tempMap.get(tempFact.getFact().getArguments().get(i)));
-		}
-		try {
-			if (argundv.size() == tempFact.getFact().getArguments().size()) {
-				tempFact.getFact().setArguments(argundv);
-			} else {
-				System.out.println("The predicate does not have appropriate value in the hash map, it cannot be true");
+		Set<String> keySet = tempMap.keySet();
+		List<String> keys = new ArrayList<>(keySet);
+		argundv = tempFact.getFact().getArguments();
+		for(int i=0;i<argundv.size();i++)
+		{
+			if(argundv.get(i) == keys.get(i))
+			{
+				argundv.set(i, tempMap.get(keys.get(i)));
 			}
-		} catch (NullPointerException e) {
-			System.out.println("The predicate does not have appropriate value in the hash map, it cannot be true");
 		}
-		tempIdb= new IdbModel(tempFact,prob);
-		program.setIdb(tempIdb);
+		tempFact.getFact().setArguments(argundv);
+		int i=0;
+		while(program.getIdb().get(i).getFact().getFact().getArguments() != tempFact.getFact().getArguments())
+		{
+			i++;
+		} 
+		if(i<program.getIdb().size())
+		{
+			program.getIdb().get(i).setProb_fact(aggProb);
+		}
+		else
+		{
+			tempIdb = new IdbModel(tempFact,tempFact.getFact().getProbability());
+			program.setIdb(tempIdb);
+		}
 	}
 }

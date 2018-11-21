@@ -57,5 +57,8 @@ public class ProgramModel {
 	{
 		this.idb.add(parmIdb);
 	}
-
+	public List<IdbModel> getIdb()
+	{
+		return idb;
+	}
 }
