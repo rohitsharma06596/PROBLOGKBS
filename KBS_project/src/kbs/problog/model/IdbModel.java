@@ -5,21 +5,21 @@ import java.util.ArrayList;
 public class IdbModel {
 	
 	/** The fact. */
-	private PredicateModel fact;
-	
-	 ArrayList<Double> prob_fact= new ArrayList();
+	private FactModel fact;
+
+	ArrayList<Double> prob_fact= new ArrayList();
 	 
-	 public IdbModel (PredicateModel p, ArrayList<Double> uncertainty ) {
+	 public IdbModel (FactModel f, ArrayList<Double> uncertainty ) {
 		 
-		 this.fact = p;
+		 this.fact = f;
 		 this.prob_fact = uncertainty;
 	 }
 
-	public PredicateModel getFact() {
+	public FactModel getFact() {
 		return fact;
 	}
 
-	public void setFact(PredicateModel fact) {
+	public void setFact(FactModel fact) {
 		this.fact = fact;
 	}
 
@@ -30,7 +30,7 @@ public class IdbModel {
 	public void setProb_fact(ArrayList<Double> prob_fact) {
 		this.prob_fact = prob_fact;
 	}
-	 
+
 	 
 
 }
