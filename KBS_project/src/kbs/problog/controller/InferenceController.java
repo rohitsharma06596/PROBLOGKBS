@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import kbs.problog.model.FactModel;
+import kbs.problog.model.IdbModel;
 import kbs.problog.model.PredicateModel;
 import kbs.problog.model.ProgramModel;
 import kbs.problog.model.RulesModel;
@@ -208,6 +209,19 @@ public class InferenceController {
 		
 		
 	} 
+	
+	public void finalise_Idb(IdbModel parmidb) {
+
+		int i=0;
+		
+		while ( parmidb.getProb_fact().size() > 1) {
+		Double new_prob =  ((parmidb.getProb_fact().get(i) + parmidb.getProb_fact().get(i+1)) - (parmidb.getProb_fact().get(i) * parmidb.getProb_fact().get(i+1)));
+		parmidb.getProb_fact().remove(i);
+		parmidb.getProb_fact().remove(i);
+		parmidb.getProb_fact().add(new_prob);
+		}
+	}
+	
 	public void inferIDB(PredicateModel head, int[] prob)
 	{
 		

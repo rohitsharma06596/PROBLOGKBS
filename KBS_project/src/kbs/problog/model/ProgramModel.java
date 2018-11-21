@@ -16,7 +16,7 @@ public class ProgramModel {
 	private List<FactModel> edb;
 	
 	/** The idb. */
-	private List<FactModel> idb;
+	private List<IdbModel> idb;
 
 	/*
 	 * Gets the ruleslist.
