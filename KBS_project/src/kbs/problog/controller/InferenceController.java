@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.*;
 
 import kbs.problog.model.FactModel;
 import kbs.problog.model.IdbModel;
@@ -17,7 +16,7 @@ public class InferenceController {
 	int matchCount;
 	HashMap<String, String> tempMap = new HashMap<>();
 	HashMap<String, String> tempMap0 = new HashMap<>();
-	//HashMap<String, String> tempMap1 = new HashMap<>();
+	// HashMap<String, String> tempMap1 = new HashMap<>();
 	int factSize;
 	int i, j, k = 0;
 	boolean mat;
@@ -62,8 +61,8 @@ public class InferenceController {
 				}
 			}
 			matchCount++;
-			
-			//tempMap1 = tempMap;
+
+			// tempMap1 = tempMap;
 			return true;
 		}
 	}
@@ -80,13 +79,13 @@ public class InferenceController {
 				if (matchCount == bodySize) {
 					// inferIDB(program.getRuleslist().get(i).getHead(), probArr); //add head with
 					// which values??
-					
+
 					while (k < factSize - 1) {
 						tempMap = tempMap0;
 						matchCount--;
 						k++;
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
-						
+
 					}
 					i = i + 1;
 					if (k == factSize) {
@@ -116,83 +115,21 @@ public class InferenceController {
 				if (j < 0) {
 					if (i == program.getRuleslist().size()) {
 						return;
-					}
-					else {
-						i=i+1;
+					} else {
+						i = i + 1;
 						j = 0;
 						tempMap = new HashMap<String, String>();
 						tempMap0 = new HashMap<String, String>();
-						//tempMap1 = new HashMap<String, String>();
+						// tempMap1 = new HashMap<String, String>();
 						HashMap<String, String> tempMap0 = new HashMap<>();
 						bodySize = program.getRuleslist().get(i).getBody().size();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
-						
-						
+
 					}
-					
+
 				}
 			}
 		}
-		/*
-		 * for(int i=0;i<factList.size();i++) {
-		 * System.out.println(factList.get(i).getFact()); }
-		 */
-		/**
-		 * for (int i = 0; i < program.getRuleslist().size(); i++) {
-		 * 
-		 * int bodySize = program.getRuleslist().get(i).getBody().size(); int
-		 * probArray[] = new int[bodySize]; // System.out.println(); /* for(int j
-		 * =0;j<ruleBody.size();j++) { System.out.print(ruleBody.get(j)); }
-		 */
-		/*
-		 * ArrayList<List<PredicateModel>> outerList = new ArrayList(); boolean isEmpty
-		 * = false; for (int j = 0; j < bodySize; j++) {
-		 * 
-		 * ArrayList<PredicateModel> innerList = new ArrayList<>(); for (int k = 0; k <
-		 * factList.size(); k++) { while (!isEmpty) { if
-		 * (ruleBody.get(j).getPredName().equals(factList.get(k).getFact().getPredName()
-		 * )) { innerList.add(factList.get(k).getFact()); }
-		 * 
-		 * if (innerList.isEmpty()) { isEmpty = true; outerList.removeAll(innerList); }
-		 * if (isEmpty == false) { outerList.add(innerList); } } }
-		 * System.out.println(outerList);
-		 * 
-		 * }
-		 */
-		/**
-		 * ArrayList<List<PredicateModel>> outerList = new ArrayList();
-		 * 
-		 * boolean isEmpty = false;
-		 */
-		/*
-		 * for (int j = 0; j < bodySize; j++) {
-		 * 
-		 * ArrayList<PredicateModel> innerList = new ArrayList<>(); for (int k = 0; k <
-		 * factList.size(); k++) { while (!isEmpty) { if
-		 * (program.getRuleslist().get(i).getBody().get(j).getPredName().equals(factList
-		 * .get(k).getFact().getPredName())) {
-		 * 
-		 * innerList.add(factList.get(k).getFact()); }
-		 * 
-		 * if (innerList.isEmpty()) { isEmpty = true; outerList.removeAll(innerList); }
-		 * if (isEmpty == false) { outerList.add(innerList); } } }
-		 * System.out.println(outerList);
-		 * 
-		 * }
-		 */
-		/**
-		 * int j=0; matchCount = 0; boolean limit=false; while(j<bodySize) { for (int k
-		 * = 0; k < factList.size(); k++) { if
-		 * (program.getRuleslist().get(i).getBody().get(j).getPredName().equals(factList.get(k).getFact().getPredName()))
-		 * { boolean match; tempMap0 = tempMap; match =
-		 * predicateMatching(program.getRuleslist().get(i).getBody().get(j),factList.get(k));
-		 * if(matchCount==bodySize) {
-		 * inferIDB(program.getRuleslist().get(i).getHead(),probArray); tempMap =
-		 * tempMap0; matchCount--; } if(match) { j++; } } } }
-		 * 
-		 * 
-		 * }
-		 */
 
 	}
 
