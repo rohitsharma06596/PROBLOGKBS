@@ -29,6 +29,16 @@ public class InferenceController {
 		bodySize = program.getRuleslist().get(0).getBody().size();
 		probArr = new ArrayList(bodySize);
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
+		this.finalise_Idb();
+		for(int l=0;l<program.getIdb().size();l++)
+		{
+			System.out.println(program.getIdb().get(l).getFact().getFact().getProbability());
+		}
+		this.finalizeIteration();
+		for(int l=0;l<program.getFacts().size();l++)
+		{
+			System.out.println(program.getFacts().get(l).getFact().getProbability());
+		}
 	}
 
 	/*
@@ -36,9 +46,55 @@ public class InferenceController {
 	 * 
 	 * }
 	 */
-
+	public void finalizeIteration() {
+		int count = 0;
+		List<FactModel> finals = new ArrayList();
+		for(int i=0;i<program.getIdb().size();i++) {
+			int j=0;
+			while(program.getIdb().get(i).getFact().getFact().getPredName()==program.getFacts().get(j).getFact().getPredName())
+			{
+				boolean match = false;
+				for(int k=0;k<program.getIdb().get(i).getFact().getFact().getArity();k++)
+				{
+					if(program.getIdb().get(i).getFact().getFact().getArguments().get(k)==program.getFacts().get(j).getFact().getArguments().get(k))
+					{
+						match = true;
+					}
+					else 
+					{
+						match = false;
+						break;
+					}
+				}
+				if(match)
+				{
+					program.getIdb().remove(k);
+				}
+				else if(!match)
+				{
+					count++;
+				}
+				j++;
+			}
+			
+		}
+		if(count>0)
+		{
+			for(int i=0;i<program.getIdb().size();i++)
+			{
+				finals.add(program.getIdb().get(i).getFact());
+			}
+			program.setFacts(finals);
+			System.out.println("Call the next ieration here");
+		}
+		else if(count==0)
+		{
+			System.out.println("The Fix point is found");
+			return;
+		}
+	}
 	public boolean predicateMatching(PredicateModel parmPred, PredicateModel parmFact) {
-	
+
 		if ((parmPred.getArity() != parmFact.getArity()) || (!(parmPred.getPredName().equals(parmFact.getPredName()))))
 			return false;
 		else {
@@ -77,8 +133,7 @@ public class InferenceController {
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 			} else {
 				if (matchCount == bodySize) {
-					inferIDB(program.getRuleslist().get(i).getHead(), probArr); 
-					
+					inferIDB(program.getRuleslist().get(i).getHead(), probArr);
 
 					while (k < factSize - 1) {
 						tempMap = tempMap0;
@@ -90,7 +145,7 @@ public class InferenceController {
 					i = i + 1;
 					if (k == factSize) {
 						tempMap0 = tempMap;
-						probArr.remove(probArr.size()-1);
+						probArr.remove(probArr.size() - 1);
 						j = j - 1;
 						k = 0;
 						if (j < 0) {
@@ -146,7 +201,7 @@ public class InferenceController {
 
 	public void finalise_Idb() {
 
-		for (int j = 0; j < program.getIdb().size(); i++) {
+		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
 
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
@@ -180,20 +235,45 @@ public class InferenceController {
 			}
 		}
 		tempFact.getFact().setArguments(argundv);
+
 		int i = 0;
-		for(i=0;i<program.getIdb().size();i++)
-		{
-			if(tempFact.getFact().getPredName() != program.getIdb().get(i).getFact().getFact().getPredName())
-			{
-				i++;
-			}
-		}
-		
-		if (i < program.getIdb().size()) {
-			program.getIdb().get(i).setProb_fact(aggProb);
-		} else {
+		boolean factMatch = false;
+		boolean argMatch = false;
+		if (program.getIdb().isEmpty()) {
 			tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 			program.setIdb(tempIdb);
 		}
+		for (i = 0; i < program.getIdb().size(); i++) {
+			if (tempFact.getFact().getPredName() == program.getIdb().get(i).getFact().getFact().getPredName()) {
+				factMatch = true;
+			}
+			if (factMatch) {
+				for (int j = 0; j < tempFact.getFact().getArity(); j++) {
+					if (program.getIdb().get(i).getFact().getFact().getArguments().get(j) == tempFact.getFact()
+							.getArguments().get(j)) {
+						argMatch = true;
+					} else {
+						argMatch = false;
+						break;
+					}
+				}
+				if (argMatch) {
+					program.getIdb().get(i).setProb_fact(tempFact.getFact().getProbability());
+				} else {
+					continue;
+				}
+			} else if (!factMatch && i == (program.getIdb().size())) {
+				tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
+				program.setIdb(tempIdb);
+			}
+
+		}
+
+		/*
+		 * if (i < program.getIdb().size()) {
+		 * program.getIdb().get(i).setProb_fact(aggProb); } else { tempIdb = new
+		 * IdbModel(tempFact, tempFact.getFact().getProbability());
+		 * program.setIdb(tempIdb); }
+		 */
 	}
 }

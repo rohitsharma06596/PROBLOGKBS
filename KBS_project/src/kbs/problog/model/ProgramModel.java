@@ -1,5 +1,6 @@
 package kbs.problog.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ProgramModel {
 	private List<FactModel> edb;
 	
 	/** The idb. */
-	private List<IdbModel> idb;
+	private List<IdbModel> idb = new ArrayList(); ;
 
 	/*
 	 * Gets the ruleslist.

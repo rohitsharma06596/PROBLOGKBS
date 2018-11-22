@@ -11,7 +11,11 @@ public class IdbModel {
 	List<Double> prob_fact= new ArrayList();
 	 
 	 public IdbModel (FactModel f, Double uncertainty ) {
+		 this.setFact(f);
 		 this.prob_fact.add(uncertainty);
+	 }
+	 public IdbModel() {
+		 
 	 }
 	 public void setProb(Double prob)
 	 {
