@@ -60,9 +60,9 @@ public class ProgramModel {
 		for(i=0;i<facts.size();i++) {
 			edb.add(facts.get(i));
 		}
-		for(i=0;i<facts.size();i++) {
+		/*for(i=0;i<facts.size();i++) {
 			System.out.println("this is edb"+edb.get(i).getFact());
-		}
+		}*/
 		
 	}
 	public void setIdb(IdbModel parmIdb)

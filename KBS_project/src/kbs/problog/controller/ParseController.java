@@ -158,13 +158,13 @@ public class ParseController {
 			}
 		}
 		
-		for (int i = 0; i < rules.size(); i++) {
+		/*for (int i = 0; i < rules.size(); i++) {
 			System.out.println(rules.get(i).getHead());
-		}
+		}*/
 		prog.setRuleslist(rules);
-		for (int i = 0; i < facts.size(); i++) {
+		/*for (int i = 0; i < facts.size(); i++) {
 			System.out.println(facts.get(i).getFact());
-		}
+		}*/
 		prog.setFacts(facts);
 		in_buf.close();
 		InferenceController ic = new InferenceController(prog);
