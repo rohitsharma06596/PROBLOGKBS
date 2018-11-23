@@ -148,7 +148,7 @@ public class ParseController {
 			if (line.contains(":-")) {
 				rule(line);
 				rules.add(r);
-				prog.setRuleslist(rules);
+				//prog.setRuleslist(rules);
 
 				r = new RulesModel();
 			} else {
@@ -157,15 +157,18 @@ public class ParseController {
 				f = new FactModel();
 			}
 		}
+		
 		for (int i = 0; i < rules.size(); i++) {
 			System.out.println(rules.get(i).getHead());
 		}
+		prog.setRuleslist(rules);
 		for (int i = 0; i < facts.size(); i++) {
 			System.out.println(facts.get(i).getFact());
 		}
 		prog.setFacts(facts);
 		in_buf.close();
-		new InferenceController(prog);
+		InferenceController ic = new InferenceController(prog);
 	}
-
+	
+	
 }
