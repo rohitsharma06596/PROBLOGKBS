@@ -6,9 +6,9 @@ import java.util.List;
 public class IdbModel {
 	
 	/** The fact. */
-	private FactModel fact;
+	private FactModel fact = new FactModel();
 
-	List<Double> prob_fact= new ArrayList();
+	List<Double> prob_fact= new ArrayList<Double>();
 	 
 	 public IdbModel (FactModel f, Double uncertainty ) {
 		 this.setFact(f);

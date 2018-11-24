@@ -1,5 +1,6 @@
 package kbs.problog.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Auto-generated Javadoc
@@ -15,7 +16,7 @@ public class PredicateModel {
 	private int arity;
 	
 	/** The arguments. */
-	private List<String> arguments;
+	private List<String> arguments = new ArrayList<String>();
 	
 	/** The probability. */
 	private Double probability;
@@ -75,7 +76,13 @@ public class PredicateModel {
 	 * @param arguments the new arguments
 	 */
 	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
+		//System.out.println(arguments.size());
+		int m = arguments.size();
+		for(int l=0;l<m;l++)
+		{
+			this.arguments.add(arguments.get(l));
+		}
+		//this.arguments = arguments;
 	}
 
 	/**
