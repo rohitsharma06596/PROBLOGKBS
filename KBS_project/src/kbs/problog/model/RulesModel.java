@@ -31,7 +31,10 @@ public class RulesModel {
 	 * @param head the new head
 	 */
 	public void setHead(PredicateModel head) {
-		this.head = head;
+		this.head.setPredName(head.getPredName());
+		this.head.setArity(head.getArity());
+		this.head.setProbability(head.getProbability());
+		this.head.setArguments(head.getArguments());
 	}
 
 	/**
@@ -58,7 +61,10 @@ public class RulesModel {
 	 * @param p the p
 	 */
 	public void addHead(PredicateModel p) {
-		this.head = p;
+		this.head.setPredName(p.getPredName());
+		this.head.setArity(p.getArity());
+		this.head.setProbability(p.getProbability());
+		this.head.setArguments(p.getArguments());
 	}
 
 }

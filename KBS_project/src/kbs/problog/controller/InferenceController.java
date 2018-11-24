@@ -29,20 +29,20 @@ public class InferenceController {
 		probArr = new ArrayList<>(bodySize);
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
 		this.finalise_Idb();
-		/*for(int l=0;l<program.getIdb().size();l++)
+		for(int l=0;l<program.getIdb().size();l++)
 		{
 			System.out.println("In the inference Controller "+program.getIdb().get(l).getFact().getFact().getProbability());
-		}*/
+		}
 		this.finalizeIteration();
-		/*for(int l=0;l<program.getFacts().size();l++)
+		for(int l=0;l<program.getFacts().size();l++)
 		{
 			System.out.println("In the inference Controller "+program.getFacts().get(l).getFact().getProbability());
-		}*/
+		}
 	}
 	
 	public Double disjunction(Double p1, Double p2) {
 		Double pro = (p1 + p2) - (p1 * p2);
-		//System.out.println("Inside disjunction disjuncted probability is: "+ pro );
+		System.out.println("Inside disjunction disjuncted probability is: "+ pro );
 		//return (p1 + p2) - (p1 * p2);
 		return pro;
 	}
@@ -51,9 +51,9 @@ public class InferenceController {
 
 		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
-			//System.out.println("Inside finalise_IDb "+program.getIdb().get(j).getFact().getFact());
+			System.out.println("Inside finalise_IDb "+program.getIdb().get(j).getFact().getFact());
 
-			//System.out.println("Inside finalise_Idb"+program.getIdb().get(j).getProb_fact());
+			System.out.println("Inside finalise_Idb"+program.getIdb().get(j).getProb_fact());
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
 				Double new_prob = disjunction(program.getIdb().get(j).getProb_fact().get(i),
 						program.getIdb().get(j).getProb_fact().get(i + 1));
@@ -61,7 +61,7 @@ public class InferenceController {
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().add(new_prob);
 			}
-			//System.out.println("Inside finlizeidb and after disjunction: "+ program.getIdb().get(j).getFact().getFact().getProbability());
+			System.out.println("Inside finlizeidb and after disjunction: "+ program.getIdb().get(j).getFact().getFact().getProbability());
 		}
 		
 	}

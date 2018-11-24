@@ -1,4 +1,4 @@
-package kbs.problog.model;
+	package kbs.problog.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ public class IdbModel {
 	/** The fact. */
 	private FactModel fact;
 
-	List<Double> prob_fact= new ArrayList();
+	List<Double> prob_fact= new ArrayList<Double>();
 	 
 	 public IdbModel (FactModel f, Double uncertainty ) {
 		 this.setFact(f);
@@ -26,7 +26,7 @@ public class IdbModel {
 	}
 
 	public void setFact(FactModel fact) {
-		this.fact = fact;
+		this.fact.setFact(fact.getFact());
 	}
 
 	public List<Double> getProb_fact() {

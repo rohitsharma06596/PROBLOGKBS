@@ -1,7 +1,6 @@
 package kbs.problog.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 // TODO: Auto-generated Javadoc
@@ -11,13 +10,13 @@ import java.util.List;
 public class ProgramModel {
 	
 	/** The ruleslist. */
-	private List<RulesModel> ruleslist = new ArrayList();
+	private List<RulesModel> ruleslist = new ArrayList<RulesModel>();
 	
 	/** The facts. */
-	private List<FactModel> edb = new ArrayList();
+	private List<FactModel> edb = new ArrayList<>();
 	
 	/** The idb. */
-	private List<IdbModel> idb = new ArrayList(); ;
+	private List<IdbModel> idb = new ArrayList<>(); ;
 
 	/*
 	 * Gets the ruleslist.
@@ -37,7 +36,7 @@ public class ProgramModel {
 		//this.ruleslist = rulelist;
 		for(int i=0;i<rulelist.size();i++)
 		{
-			ruleslist.add(rulelist.get(i));
+			this.ruleslist.add(rulelist.get(i));
 		}
 	}
 
