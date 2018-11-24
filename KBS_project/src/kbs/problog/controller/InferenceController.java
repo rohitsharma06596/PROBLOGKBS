@@ -17,7 +17,7 @@ public class InferenceController {
 	int matchCount;
 	LinkedHashMap<String, String> tempMap = new LinkedHashMap<>();
 	LinkedHashMap<String, String> tempMap0 = new LinkedHashMap<>();
-	List <Integer> factSelect = new ArrayList<Integer>();
+	List<Integer> factSelect = new ArrayList<Integer>();
 	HashMap<String, String> parmMap = new HashMap<>();
 	HashMap<String, String> parmMap0 = new HashMap<>();
 	// HashMap<String, String> tempMap1 = new HashMap<>();
@@ -85,44 +85,44 @@ public class InferenceController {
 		int count = 0;
 		List<FactModel> finals = new ArrayList<>();
 		for (int i = 0; i < program.getIdb().size(); i++) {
-			for (int j = 0; j < program.getFacts().size(); j++)
+			for (int j = 0; j < program.getFacts().size(); j++) {
+				while (program.getIdb().get(i).getFact().getFact().getPredName() == program.getFacts().get(j).getFact()
+						.getPredName()) {
 
-			// while(program.getIdb().get(i).getFact().getFact().getPredName()==program.getFacts().get(j).getFact().getPredName())
-			{
-				
-				boolean match = false;
-				for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) {
-					if (program.getIdb().get(i).getFact().getFact().getArguments().get(k) == program.getFacts().get(j)
-							.getFact().getArguments().get(k)) {
-						match = true;
-					} else {
-						match = false;
-						break;
+					boolean match = false;
+					for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) {
+						if (program.getIdb().get(i).getFact().getFact().getArguments().get(k) == program.getFacts()
+								.get(j).getFact().getArguments().get(k)) {
+							match = true;
+						} else {
+							match = false;
+							break;
+						}
 					}
+					if (match) {
+						program.getIdb().remove(k);
+					} else if (!match) {
+						count++;
+					}
+					j++;
 				}
-				if (match) {
-					program.getIdb().remove(k);
-				} else if (!match) {
-					count++;
-				}
-				j++;
-			}
 
-		}
-		if (count > 0) {
-			for (int i = 0; i < program.getIdb().size(); i++) {
-				finals.add(program.getIdb().get(i).getFact());
 			}
-			program.setFacts(finals);
-			/*
-			 * for(int i=0;i<program.getIdb().size();i++) {
-			 * System.out.println("The final IDB set contains: " +
-			 * program.getIdb().get(i).getFact().getFact()); }
-			 */
-			// System.out.println("Call the next ieration here");
-		} else if (count == 0) {
-			// System.out.println("The Fix point is found");
-			return;
+			if (count > 0) {
+				for (int a = 0; a < program.getIdb().size(); a++) {
+					finals.add(program.getIdb().get(a).getFact());
+				}
+				program.setFacts(finals);
+				/*
+				 * for(int i=0;i<program.getIdb().size();i++) {
+				 * System.out.println("The final IDB set contains: " +
+				 * program.getIdb().get(i).getFact().getFact()); }
+				 */
+				// System.out.println("Call the next ieration here");
+			} else if (count == 0) {
+				// System.out.println("The Fix point is found");
+				return;
+			}
 		}
 	}
 
@@ -174,7 +174,7 @@ public class InferenceController {
 		Set<String> keySet = hashMap.keySet();
 		List<String> keys = new ArrayList<>(keySet);
 		argum = tempFact.getFact().getArguments();
-		//System.out.println(argum);
+		// System.out.println(argum);
 		for (int l = 0; l < argum.size(); l++) {
 			if (argum.get(l).equals(keys.get(l))) {
 				argum.set(l, tempMap.get(keys.get(l)));
@@ -185,18 +185,23 @@ public class InferenceController {
 		int l = 0;
 		boolean factMatch = false;
 		boolean argMatch = false;
-		if (program.getIdb().isEmpty()) {
+		try {
+			if (program.getIdb().isEmpty()) {
+				tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
+				program.setIdb(tempIdb);
+			}
+		} catch (Exception e) {
 			tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 			program.setIdb(tempIdb);
-			
 		}
 		for (l = 0; l < program.getIdb().size(); l++) {
-			if (tempFact.getFact().getPredName().equals(program.getIdb().get(l).getFact().getFact().getPredName()))  {
+			if (tempFact.getFact().getPredName().equals(program.getIdb().get(l).getFact().getFact().getPredName())) {
 				factMatch = true;
 			}
 			if (factMatch) {
 				for (int m = 0; m < tempFact.getFact().getArity(); m++) {
-					if (program.getIdb().get(l).getFact().getFact().getArguments().get(m).equals(tempFact.getFact().getArguments().get(m))) {
+					if (program.getIdb().get(l).getFact().getFact().getArguments().get(m)
+							.equals(tempFact.getFact().getArguments().get(m))) {
 						argMatch = true;
 					} else {
 						argMatch = false;
@@ -205,8 +210,10 @@ public class InferenceController {
 				}
 				if (argMatch) {
 					program.getIdb().get(l).setProb_fact(tempFact.getFact().getProbability());
-	//				 System.out.println("Inside infer Idb, the probs are: "+program.getIdb().get(i).getProb_fact());
-		//			 System.out.println("Inside infer Idb, the IDB is: "+program.getIdb().get(i).getFact().getFact());
+					// System.out.println("Inside infer Idb, the probs are:
+					// "+program.getIdb().get(i).getProb_fact());
+					// System.out.println("Inside infer Idb, the IDB is:
+					// "+program.getIdb().get(i).getFact().getFact());
 				} else {
 					continue;
 				}
@@ -217,12 +224,11 @@ public class InferenceController {
 
 		}
 
-		
 	}
 
 	public void match(PredicateModel p, PredicateModel f, HashMap<String, String> currentHash,
 			HashMap<String, String> previousHash) {
-		
+
 		int temparity = 0;
 		mat = this.predicateMatching(p, f, currentHash);
 		currentHash.clear();
@@ -233,7 +239,7 @@ public class InferenceController {
 			if (matchCount != bodySize) {
 				j = j + 1;
 				factSelect.add(k);
-				k=0;
+				k = 0;
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
 						previousHash);
 			} else {
@@ -289,10 +295,10 @@ public class InferenceController {
 				k = k + 1;
 				currentHash.clear();
 				currentHash.putAll(tempMap0);
-				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
-						currentHash, previousHash);
+				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
+						previousHash);
 			} else {
-			//	System.out.println("This predicate cannot be true for the current edb");
+				// System.out.println("This predicate cannot be true for the current edb");
 
 				j = j - 1;
 				if (j < 0) {
@@ -328,35 +334,32 @@ public class InferenceController {
 					}
 					currentHash.clear();
 					currentHash.putAll(tempMap);
-					if (j-1 < 0)
-					{
+					if (j - 1 < 0) {
 						tempMap0.clear();
 						tempMap0.putAll(tempMap);
-					}
-					else
-					{
+					} else {
 						tempMap0.clear();
 						tempMap0.putAll(tempMap);
-						temparity = program.getRuleslist().get(i).getBody().get(j-1).getArity();
+						temparity = program.getRuleslist().get(i).getBody().get(j - 1).getArity();
 						for (int iteration = 0; iteration < temparity; iteration++) {
-							tempMap0.remove(program.getRuleslist().get(i).getBody().get(j-1).getArguments().get(iteration));
+							tempMap0.remove(
+									program.getRuleslist().get(i).getBody().get(j - 1).getArguments().get(iteration));
 						}
-						
+
 					}
 					previousHash.clear();
 					previousHash.putAll(tempMap0);
-					k=factSelect.get(factSelect.size()-1)+1;
-					if(k == program.getFacts().size())
-					{
-						j = j-1;
-						if(j<0)
-						{
-							j=0;
+					k = factSelect.get(factSelect.size() - 1) + 1;
+					if (k == program.getFacts().size()) {
+						j = j - 1;
+						if (j < 0) {
+							j = 0;
 						}
 						return;
 					}
-					factSelect.remove(factSelect.size()-1);
-					 match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash, previousHash);
+					factSelect.remove(factSelect.size() - 1);
+					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
+							currentHash, previousHash);
 
 				}
 			}

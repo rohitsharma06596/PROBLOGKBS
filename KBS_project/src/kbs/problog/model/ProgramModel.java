@@ -11,13 +11,13 @@ import java.util.List;
 public class ProgramModel {
 	
 	/** The ruleslist. */
-	private List<RulesModel> ruleslist = new ArrayList();
+	private List<RulesModel> ruleslist = new ArrayList<RulesModel>();
 	
 	/** The facts. */
-	private List<FactModel> edb = new ArrayList();
+	private List<FactModel> edb = new ArrayList<FactModel>();
 	
 	/** The idb. */
-	private List<IdbModel> idb = new ArrayList(); ;
+	private List<IdbModel> idb = new ArrayList<IdbModel>(); ;
 
 	/*
 	 * Gets the ruleslist.
