@@ -66,7 +66,7 @@ public class InferenceController {
 		this.program = program;
 		factSize = program.getFacts().size();
 		bodySize = program.getRuleslist().get(0).getBody().size();
-		probArr = new ArrayList<>(bodySize);
+		probArr = new ArrayList<>();
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact(), parmMap, parmMap0);
 		this.finalise_Idb();
 		/*
@@ -312,7 +312,7 @@ public class InferenceController {
 				k = 0;
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
 						previousHash);
-			} else {
+					} else {
 				if (matchCount == bodySize) {
 					inferIDB(program.getRuleslist().get(i).getHead(), probArr, currentHash);
 					factSelect.add(k);
@@ -332,7 +332,7 @@ public class InferenceController {
 						factPush.clear();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 								currentHash, previousHash);
-
+						
 					}
 					// i = i + 1;
 					if (k == factSize - 1) {
@@ -361,8 +361,9 @@ public class InferenceController {
 							}
 							match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 									currentHash, previousHash);
-							bodySize = program.getRuleslist().get(i).getBody().size();
-							j = 0;
+							/*bodySize = program.getRuleslist().get(i).getBody().size();
+							j = 0;*/
+							
 						}
 					}
 				}
@@ -375,6 +376,7 @@ public class InferenceController {
 				currentHash.putAll(tempMap0);
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
 						previousHash);
+				
 			} else {
 				// System.out.println("This predicate cannot be true for the current edb");
 
@@ -387,6 +389,7 @@ public class InferenceController {
 					} else {
 						k = 0;
 						i = i + 1;
+						this.bodySize = program.getRuleslist().get(i).getBody().size();
 						factSelect.clear();
 						factPush.clear();
 						j = 0;
@@ -401,7 +404,7 @@ public class InferenceController {
 						bodySize = program.getRuleslist().get(i).getBody().size();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 								currentHash, previousHash);
-
+						
 					}
 
 				} else {
@@ -463,12 +466,16 @@ public class InferenceController {
 					if (k == program.getFacts().size()) {
 						j = j - 1;
 						if (j < 0) {
-							i=i+1;
-							if(i==program.getRuleslist().size())
+							
+							
+							if(i==program.getRuleslist().size()-1)
 							{
 								System.out.println("I am going home!!! not alone!!");
-								System.exit(0);;
+								return;
+								//System.exit(0);;
 							}
+							i=i+1;
+							this.bodySize = program.getRuleslist().get(i).getBody().size();
 							j = 0;
 							k=0;
 						}
@@ -477,6 +484,7 @@ public class InferenceController {
 					factSelect.remove(factSelect.size() - 1);
 					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 							currentHash, previousHash);
+					
 
 				}
 			}
