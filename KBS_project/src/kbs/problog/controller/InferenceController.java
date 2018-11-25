@@ -220,82 +220,83 @@ public class InferenceController {
 	 */
 	public void inferIDB(PredicateModel head, List<Double> prob, HashMap<String, String> hashMap) {
 
-		FactModel tempFact = new FactModel();
-		tempFact.setFact(head);
-		Double[] probability = prob.toArray(new Double[prob.size()]);
-		Arrays.sort(probability);
-		double minProb = probability[0];
-		double aggProb = minProb * head.getProbability();
-		tempFact.getFact().setProbability(aggProb);
-		IdbModel tempIdb;
+		
+			FactModel tempFact = new FactModel();
+			tempFact.setFact(head);
+			Double[] probability = prob.toArray(new Double[prob.size()]);
+			Arrays.sort(probability);
+			double minProb = probability[0];
+			double aggProb = minProb * head.getProbability();
+			tempFact.getFact().setProbability(aggProb);
+			IdbModel tempIdb;
 
-		List<String> argum = new ArrayList<>();
-		Set<String> keySet = hashMap.keySet();
-		List<String> keys = new ArrayList<>(keySet);
-		// argum = tempFact.getFact().getArguments();
-		for (int a = 0; a < tempFact.getFact().getArguments().size(); a++) {
-			argum.add(tempFact.getFact().getArguments().get(a));
-		}
-		for (int i = 0; i < argum.size(); i++) {
-			if (argum.get(i).equals(keys.get(i))) {
-				argum.set(i, hashMap.get(keys.get(i)));
-				System.out.println(hashMap.get(keys.get(i)));
+			List<String> argum = new ArrayList<>();
+			Set<String> keySet = hashMap.keySet();
+			List<String> keys = new ArrayList<>(keySet);
+			// argum = tempFact.getFact().getArguments();
+			for (int a = 0; a < tempFact.getFact().getArguments().size(); a++) {
+				argum.add(tempFact.getFact().getArguments().get(a));
 			}
-		}
-		tempFact.getFact().getArguments().clear();
-		tempFact.getFact().setArguments(argum);
+			for (int i = 0; i < argum.size(); i++) {
+				if (argum.get(i).equals(keys.get(i))) {
+					argum.set(i, hashMap.get(keys.get(i)));
+					System.out.println(hashMap.get(keys.get(i)));
+				}
+			}
+			tempFact.getFact().getArguments().clear();
+			tempFact.getFact().setArguments(argum);
 
-		int l = 0;
-		boolean factMatch = false;
-		boolean argMatch = false;
-		try {
+			int i = 0;
+			boolean factMatch = false;
+			boolean argMatch = false;
 			if (program.getIdb().isEmpty()) {
 				tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 				program.setIdb(tempIdb);
-			}
-		} catch (Exception e) {
-			tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
-			program.setIdb(tempIdb);
-		} else {
-			for (i = 0; i < program.getIdb().size(); i++) {
-				if (tempFact.getFact().getPredName()
-						.equals(program.getIdb().get(i).getFact().getFact().getPredName())) {
-					factMatch = true;
-					// System.out.println(factMatch);
-				}
-				if (factMatch) {
-					for (int j = 0; j < tempFact.getFact().getArity(); j++) {
-						if (program.getIdb().get(i).getFact().getFact().getArguments().get(j)
-								.equals(tempFact.getFact().getArguments().get(j))) {
-							argMatch = true;
-							// System.out.println("bsdhfb");
-						} else {
-							argMatch = false;
-							break;
-						}
+			} else {
+				for (i = 0; i < program.getIdb().size(); i++) {
+					if (tempFact.getFact().getPredName()
+							.equals(program.getIdb().get(i).getFact().getFact().getPredName())) {
+						factMatch = true;
+						// System.out.println(factMatch);
 					}
-					if (argMatch) {
-						// System.out.println("Inside infer Idb, the probs are:
-						// "+program.getIdb().get(i).getProb_fact());
-						System.out.println(
-								"Inside infer Idb, the IDB is: " + program.getIdb().get(i).getFact().getFact());
-					} else if (i == (program.getIdb().size() - 1) && !argMatch) {
+					if (factMatch) {
+						for (int j = 0; j < tempFact.getFact().getArity(); j++) {
+							if (program.getIdb().get(i).getFact().getFact().getArguments().get(j)
+									.equals(tempFact.getFact().getArguments().get(j))) {
+								argMatch = true;
+								// System.out.println("bsdhfb");
+							} else {
+								argMatch = false;
+								break;
+							}
+						}
+						if (argMatch) {
+							program.getIdb().get(i).setProb_fact(tempFact.getFact().getProbability());
+							// System.out.println("Inside infer Idb, the probs are:
+							// "+program.getIdb().get(i).getProb_fact());
+							System.out.println(
+									"Inside infer Idb, the IDB is: " + program.getIdb().get(i).getFact().getFact());
+						} else if (i == (program.getIdb().size() - 1) && !argMatch) {
+							tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
+							program.setIdb(tempIdb);
+						}
+					} else if (!factMatch && i == (program.getIdb().size() - 1)) {
 						tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 						program.setIdb(tempIdb);
+					} else {
+						continue;
 					}
-				} else if (!factMatch && i == (program.getIdb().size() - 1)) {
-					tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
-					program.setIdb(tempIdb);
-				} else {
-					continue;
+
 				}
-
 			}
-		}
 
-	}
-
-	/**
+			/*
+			 * if (i < program.getIdb().size()) {
+			 * program.getIdb().get(i).setProb_fact(aggProb); } else { tempIdb = new
+			 * IdbModel(tempFact, tempFact.getFact().getProbability());
+			 * program.setIdb(tempIdb); }
+			 */
+		}	/**
 	 * Match.
 	 *
 	 * @param p the p
