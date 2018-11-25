@@ -457,19 +457,27 @@ public class InferenceController {
 						}
 						previousHash.clear();
 						previousHash.putAll(tempMap0);
-						k = factSelect.get(factSelect.size() - 1) + 1;
-						if (k == program.getFacts().size()) {
-							j = j - 1;
-							if (j < 0) {
-								j = 0;
-							}
-							return;
-						}
-						factSelect.remove(factSelect.size() - 1);
-						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
-								currentHash, previousHash);
-
+						
 					}
+					k = factSelect.get(factSelect.size() - 1) + 1;
+					if (k == program.getFacts().size()) {
+						j = j - 1;
+						if (j < 0) {
+							i=i+1;
+							if(i==program.getRuleslist().size())
+							{
+								System.out.println("I am going home!!! not alone!!");
+								System.exit(0);;
+							}
+							j = 0;
+							k=0;
+						}
+						//return;
+					}
+					factSelect.remove(factSelect.size() - 1);
+					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
+							currentHash, previousHash);
+
 				}
 			}
 
