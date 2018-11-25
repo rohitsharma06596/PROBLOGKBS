@@ -293,15 +293,16 @@ public class InferenceController {
 			}
 		}
 		if (!mat) {
-			if (k < program.getFacts().size() - 1) {
+			k=k+1;
+			if (k < program.getFacts().size()) {
 				k = k + 1;
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 			} else {
-				System.out.println("This predicate cannot be true for the current edb");
+			//	System.out.println("This predicate cannot be true for the current edb");
 				j = j - 1;
 				k = 0;
 				if (j < 0) {
-					if (i == program.getRuleslist().size()) {
+					if (i == program.getRuleslist().size()-1) {
 						return;
 					} else {
 						i = i + 1;
