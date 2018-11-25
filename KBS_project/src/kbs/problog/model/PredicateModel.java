@@ -76,11 +76,9 @@ public class PredicateModel {
 	 * @param arguments the new arguments
 	 */
 	public void setArguments(List<String> arguments) {
-		//System.out.println(arguments.size());
-		int m = arguments.size();
-		for(int l=0;l<m;l++)
+		for(int a=0;a<arguments.size();a++)
 		{
-			this.arguments.add(arguments.get(l));
+			this.arguments.add(arguments.get(a));
 		}
 		//this.arguments = arguments;
 	}

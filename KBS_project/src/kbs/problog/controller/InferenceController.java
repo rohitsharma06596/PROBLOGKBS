@@ -50,64 +50,41 @@ public class InferenceController {
 	
 	/** The mat. */
 	boolean mat;
-	
-	/** The body size. */
-	int bodySize;
-	
-	/** The prob arr. */
-	List<Double> probArr = new ArrayList<Double>();
 
-	/**
-	 * Instantiates a new inference controller.
-	 *
-	 * @param program the program
-	 */
+	int bodySize;
+	List<Double> probArr;
+
 	public InferenceController(ProgramModel program) {
 		this.program = program;
-		factSize = program.getFacts().size();
-		bodySize = program.getRuleslist().get(0).getBody().size();
+		factSize = this.program.getFacts().size();
+		bodySize = this.program.getRuleslist().get(0).getBody().size();
 		probArr = new ArrayList<>();
 		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact(), parmMap, parmMap0);
 		this.finalise_Idb();
-		/*
-		 * for(int l=0;l<program.getIdb().size();l++) {
-		 * System.out.println("In the inference Controller "+program.getIdb().get(l).
-		 * getFact().getFact().getProbability()); }
-		 */
+		for (int l = 0; l < this.program.getIdb().size(); l++) {
+			System.out.println(
+					"In the inference Controller " + this.program.getIdb().get(l).getFact().getFact().getProbability());
+		}
 		this.finalizeIteration();
-		/*
-		 * for(int l=0;l<program.getFacts().size();l++) {
-		 * System.out.println("In the inference Controller "+program.getFacts().get(l).
-		 * getFact().getProbability()); }
-		 */
+		for (int l = 0; l < this.program.getFacts().size(); l++) {
+			System.out.println("In the inference Controller " + program.getFacts().get(l).getFact().getProbability());
+		}
 	}
 
-	/**
-	 * Disjunction.
-	 *
-	 * @param p1 the p 1
-	 * @param p2 the p 2
-	 * @return the double
-	 */
 	public Double disjunction(Double p1, Double p2) {
 		Double pro = (p1 + p2) - (p1 * p2);
-		// System.out.println("Inside disjunction disjuncted probability is: "+ pro );
+		System.out.println("Inside disjunction disjuncted probability is: " + pro);
 		// return (p1 + p2) - (p1 * p2);
 		return pro;
 	}
 
-	/**
-	 * Finalise idb.
-	 */
 	public void finalise_Idb() {
 
 		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
-			// System.out.println("Inside finalise_IDb
-			// "+program.getIdb().get(j).getFact().getFact());
+			System.out.println("Inside finalise_IDb " + program.getIdb().get(j).getFact().getFact());
 
-			// System.out.println("Inside
-			// finalise_Idb"+program.getIdb().get(j).getProb_fact());
+			System.out.println("Inside finalise_Idb" + program.getIdb().get(j).getProb_fact());
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
 				Double new_prob = disjunction(program.getIdb().get(j).getProb_fact().get(i),
 						program.getIdb().get(j).getProb_fact().get(i + 1));
@@ -115,8 +92,9 @@ public class InferenceController {
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().add(new_prob);
 			}
-			// System.out.println("Inside finlizeidb and after disjunction: "+
-			// program.getIdb().get(j).getFact().getFact().getProbability());
+			program.getIdb().get(j).getFact().getFact().setProbability(program.getIdb().get(i).getProb_fact().get(0));
+			System.out.println("Inside finlizeidb and after disjunction: "
+					+ program.getIdb().get(j).getFact().getFact().getProbability());
 		}
 
 	}
@@ -128,44 +106,67 @@ public class InferenceController {
 		int count = 0;
 		List<FactModel> finals = new ArrayList<>();
 		for (int i = 0; i < program.getIdb().size(); i++) {
-			for (int j = 0; j < program.getFacts().size(); j++) {
-				while (program.getIdb().get(i).getFact().getFact().getPredName() == program.getFacts().get(j).getFact()
+			for (int j = 0; j < program.getFacts().size(); j++)
+			{
+				if (program.getIdb().get(i).getFact().getFact().getPredName() == program.getFacts().get(j).getFact()
 						.getPredName()) {
-
-					boolean match = false;
-					for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) {
-						if (program.getIdb().get(i).getFact().getFact().getArguments().get(k) == program.getFacts()
-								.get(j).getFact().getArguments().get(k)) {
-							match = true;
-						} else {
-							match = false;
+					{
+						boolean match = false;
+						for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) {
+							if (program.getIdb().get(i).getFact().getFact().getArguments().get(k)
+									.equals(program.getFacts().get(j).getFact().getArguments().get(k))) {
+								match = true;
+							} else {
+								match = false;
+								break;
+							}
+						}
+						if(match == true)
+						{
+							if(program.getIdb().get(i).getFact().getFact().getProbability()==program.getFacts().get(j).getFact().getProbability())
+							{
+								program.getIdb().remove(i);
+							}
+							else
+							{
+								program.getFacts().remove(j);
+								count++;
+							}
 							break;
 						}
+						else
+						{
+							continue;
+						}
+						/*if (k == program.getIdb().get(i).getFact().getFact().getArity()) {
+							k--;
+							if (match) {
+								program.getIdb().remove(k);
+							} else if (!match) {
+								count++;
+							}
+							j++;
+						}*/
 					}
-					if (match) {
-						program.getIdb().remove(k);
-					} else if (!match) {
-						count++;
-					}
-					j++;
 				}
-
+				
 			}
-			if (count > 0) {
-				for (int a = 0; a < program.getIdb().size(); a++) {
-					finals.add(program.getIdb().get(a).getFact());
-				}
-				program.setFacts(finals);
-
-				for (int b = 0; i < program.getIdb().size(); b++) {
-					System.out.println("The final IDB set contains: " + program.getIdb().get(b).getFact().getFact());
-				}
-
-				System.out.println("Call the next ieration here");
-			} else if (count == 0) {
-				System.out.println("The Fix point is found");
-				return;
+			
+		}// Akhu idb list edb ma nakhvanu che;
+		if (count > 0) {
+			for (int i = 0; i < program.getIdb().size(); i++) {
+				finals.add(program.getIdb().get(i).getFact());
 			}
+			program.setFacts(finals);
+			/*
+			 * for(int i=0;i<program.getIdb().size();i++) {
+			 * System.out.println("The final IDB set contains: " +
+			 * program.getIdb().get(i).getFact().getFact()); }
+			 */
+			// System.out.println("Call the next ieration here");
+		} else if (count == 0) {
+			// System.out.println("The Fix point is found");
+			return;
 		}
 	}
 
@@ -223,21 +224,25 @@ public class InferenceController {
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
 		Arrays.sort(probability);
-		Double minProb = probability[0];
-		Double aggProb = minProb * head.getProbability();
+		double minProb = probability[0];
+		double aggProb = minProb * head.getProbability();
 		tempFact.getFact().setProbability(aggProb);
 		IdbModel tempIdb;
 
 		List<String> argum = new ArrayList<>();
 		Set<String> keySet = hashMap.keySet();
 		List<String> keys = new ArrayList<>(keySet);
-		argum = tempFact.getFact().getArguments();
-		// System.out.println(argum);
-		for (int l = 0; l < argum.size(); l++) {
-			if (argum.get(l).equals(keys.get(l))) {
-				argum.set(l, tempMap.get(keys.get(l)));
+		// argum = tempFact.getFact().getArguments();
+		for (int a = 0; a < tempFact.getFact().getArguments().size(); a++) {
+			argum.add(tempFact.getFact().getArguments().get(a));
+		}
+		for (int i = 0; i < argum.size(); i++) {
+			if (argum.get(i).equals(keys.get(i))) {
+				argum.set(i, hashMap.get(keys.get(i)));
+				System.out.println(hashMap.get(keys.get(i)));
 			}
 		}
+		tempFact.getFact().getArguments().clear();
 		tempFact.getFact().setArguments(argum);
 
 		int l = 0;
@@ -251,35 +256,41 @@ public class InferenceController {
 		} catch (Exception e) {
 			tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 			program.setIdb(tempIdb);
-		}
-		for (l = 0; l < program.getIdb().size(); l++) {
-			if (tempFact.getFact().getPredName().equals(program.getIdb().get(l).getFact().getFact().getPredName())) {
-				factMatch = true;
-			}
-			if (factMatch) {
-				for (int m = 0; m < tempFact.getFact().getArity(); m++) {
-					if (program.getIdb().get(l).getFact().getFact().getArguments().get(m)
-							.equals(tempFact.getFact().getArguments().get(m))) {
-						argMatch = true;
-					} else {
-						argMatch = false;
-						break;
-					}
+		} else {
+			for (i = 0; i < program.getIdb().size(); i++) {
+				if (tempFact.getFact().getPredName()
+						.equals(program.getIdb().get(i).getFact().getFact().getPredName())) {
+					factMatch = true;
+					// System.out.println(factMatch);
 				}
-				if (argMatch) {
-					program.getIdb().get(l).setProb_fact(tempFact.getFact().getProbability());
-					// System.out.println("Inside infer Idb, the probs are:
-					// "+program.getIdb().get(i).getProb_fact());
-					// System.out.println("Inside infer Idb, the IDB is:
-					// "+program.getIdb().get(i).getFact().getFact());
+				if (factMatch) {
+					for (int j = 0; j < tempFact.getFact().getArity(); j++) {
+						if (program.getIdb().get(i).getFact().getFact().getArguments().get(j)
+								.equals(tempFact.getFact().getArguments().get(j))) {
+							argMatch = true;
+							// System.out.println("bsdhfb");
+						} else {
+							argMatch = false;
+							break;
+						}
+					}
+					if (argMatch) {
+						// System.out.println("Inside infer Idb, the probs are:
+						// "+program.getIdb().get(i).getProb_fact());
+						System.out.println(
+								"Inside infer Idb, the IDB is: " + program.getIdb().get(i).getFact().getFact());
+					} else if (i == (program.getIdb().size() - 1) && !argMatch) {
+						tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
+						program.setIdb(tempIdb);
+					}
+				} else if (!factMatch && i == (program.getIdb().size() - 1)) {
+					tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
+					program.setIdb(tempIdb);
 				} else {
 					continue;
 				}
-			} else if (!factMatch && l == (program.getIdb().size())) {
-				tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
-				program.setIdb(tempIdb);
-			}
 
+			}
 		}
 
 	}
@@ -370,7 +381,8 @@ public class InferenceController {
 			}
 		}
 		if (!mat) {
-			if (k < program.getFacts().size() - 1) {
+			k=k+1;
+			if (k < program.getFacts().size()) {
 				k = k + 1;
 				currentHash.clear();
 				currentHash.putAll(tempMap0);
