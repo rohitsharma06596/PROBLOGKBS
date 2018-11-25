@@ -10,7 +10,7 @@ import java.util.List;
 public class ProgramModel {
 	
 	/** The ruleslist. */
-	private List<RulesModel> ruleslist = new ArrayList<RulesModel>();
+	private List<RulesModel> ruleslist = new ArrayList<>();
 	
 	/** The facts. */
 	private List<FactModel> edb = new ArrayList<>();

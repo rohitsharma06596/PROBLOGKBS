@@ -10,7 +10,7 @@ import java.util.List;
 public class RulesModel {
 
 	/** The head. */
-	PredicateModel head;
+	PredicateModel head = new PredicateModel();
 	
 	/** The body. */
 	private List<PredicateModel> body = new ArrayList<PredicateModel>();

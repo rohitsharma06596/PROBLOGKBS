@@ -1,5 +1,5 @@
 package kbs.problog.controller;
-import kbs.problog.model.*;
+import kbs.problog.model.ProgramModel;
 
 public class Driver {
 

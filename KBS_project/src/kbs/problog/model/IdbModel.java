@@ -6,7 +6,7 @@ import java.util.List;
 public class IdbModel {
 	
 	/** The fact. */
-	private FactModel fact;
+	private FactModel fact = new FactModel();
 
 	List<Double> prob_fact= new ArrayList<Double>();
 	 
