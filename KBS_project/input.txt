@@ -2,4 +2,3 @@ reachable(X,Y) :- edge(X,Y) : 0.5.
 reachable(X,Y) :- edge(X,Z), reachable(Z,Y) : 0.5.
 edge(0, 1) : 0.5.
 edge(1, 2) : 0.5.
-edge(2, 3) : 0.5.

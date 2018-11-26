@@ -363,7 +363,7 @@ public class InferenceController {
 						currentHash.putAll(tempMap);
 						matchCount--;
 						k++;
-						factSelect.clear();
+						// factSelect.clear();
 						// factPush.clear();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 								currentHash, previousHash);
@@ -377,9 +377,10 @@ public class InferenceController {
 						currentHash.putAll(tempMap);
 						probArr.remove(probArr.size() - 1);
 						j = j - 1;
-						k = 0;
+
 						if (j < 0) {
 							j = 0;
+							k = 0;
 							i = i + 1;
 							factSelect.clear();
 							factPush.clear();
@@ -408,7 +409,26 @@ public class InferenceController {
 							 */
 
 						}
+					} else {
+						factSelect.remove(factSelect.size() - 1);
+						k = factSelect.get(factSelect.size() - 1) + 1;
+						temparity = program.getRuleslist().get(i).getBody().get(j + 1).getArity();
+						int iteration3 = temparity;
+						while (iteration3 > 0) {
+							factPush.remove(factPush.size() - 1);
+							iteration3--;
+
+						}
+						temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
+						iteration3 = temparity;
+						while (iteration3 > 0) {
+							factPush.remove(factPush.size() - 1);
+							iteration3--;
+						}
+						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
+								currentHash, previousHash);	
 					}
+					
 				}
 			}
 		}
@@ -458,15 +478,20 @@ public class InferenceController {
 					temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
 					for (int iteration = temparity - 1; iteration >= 0; iteration--) {
 						for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
-							if (program.getRuleslist().get(i).getBody().get(j).getArguments().get(iteration)
-									.equals(factPush.get(iteration2))) {
-						//	ERROR	 Factpush has nothing and it is still trying to equate
-								if (factPush.indexOf(factPush.get(iteration2)) == factPush
-										.lastIndexOf(factPush.get(iteration2)))
-									tempMap.remove(factPush.get(iteration2));
-								else
-									System.out.println("This comes from previous predicate cannot be removed");
-							} else {
+							try {
+								if (program.getRuleslist().get(i).getBody().get(j).getArguments().get(iteration)
+										.equals(factPush.get(iteration2))) {
+									// ERROR Factpush has nothing and it is still trying to equate
+
+									if (factPush.indexOf(factPush.get(iteration2)) == factPush
+											.lastIndexOf(factPush.get(iteration2)))
+										tempMap.remove(factPush.get(iteration2));
+									else
+										System.out.println("This comes from previous predicate cannot be removed");
+								} else {
+									continue;
+								}
+							} catch (Exception E) {
 								continue;
 							}
 
