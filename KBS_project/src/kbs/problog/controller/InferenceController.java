@@ -75,6 +75,7 @@ public class InferenceController {
 			k = 0;
 			parmMap.clear();
 			parmMap0.clear();
+			matchCount = 0;
 			match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact(), parmMap,
 					parmMap0);
 			this.finalise_Idb();
@@ -338,6 +339,7 @@ public class InferenceController {
 		previousHash.putAll(tempMap0);
 		if (mat) {
 			if (matchCount != bodySize) {
+				System.out.println(matchCount);
 				factSelect.add(k);
 				for (int interation = 0; interation < program.getFacts().get(k).getFact().getArity(); interation++) {
 					factPush.add(program.getRuleslist().get(i).getBody().get(j).getArguments().get(interation));
@@ -410,161 +412,210 @@ public class InferenceController {
 
 						}
 					} else {
-						factSelect.remove(factSelect.size() - 1);
-						k = factSelect.get(factSelect.size() - 1) + 1;
-						temparity = program.getRuleslist().get(i).getBody().get(j + 1).getArity();
-						int iteration3 = temparity;
-						while (iteration3 > 0) {
-							factPush.remove(factPush.size() - 1);
-							iteration3--;
+						while (k == factSize - 1 && j >= 0) {
+							factSelect.remove(factSelect.size() - 1);
+							tempMap.clear();
+							tempMap.putAll(previousHash);
+							temparity = program.getRuleslist().get(i).getBody().get(j + 1).getArity();
+							for (int iteration = temparity - 1; iteration >= 0; iteration--) {
+								for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
+									try {
+										if (program.getRuleslist().get(i).getBody().get(j + 1).getArguments()
+												.get(iteration).equals(factPush.get(iteration2))) {
+											// ERROR Factpush has nothing and it is still trying to equate
+
+											if (factPush.indexOf(factPush.get(iteration2)) == factPush
+													.lastIndexOf(factPush.get(iteration2)))
+												tempMap.remove(factPush.get(iteration2));
+											else
+												System.out.println(
+														"This comes from previous predicate cannot be removed");
+										} else {
+											continue;
+										}
+									} catch (Exception E) {
+										continue;
+									}
+									temparity = program.getRuleslist().get(i).getBody().get(j + 1).getArity();
+									int iteration3 = temparity;
+									while (iteration3 > 0) {
+										factPush.remove(factPush.size() - 1);
+										iteration3--;
+									}
+
+									currentHash.clear();
+									currentHash.putAll(tempMap);
+									if (j - 1 < 0) {
+										tempMap0.clear();
+										previousHash.clear();
+									} else {
+										tempMap0.clear();
+										tempMap0.putAll(tempMap);
+										temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
+										for (iteration = temparity - 1; iteration >= 0; iteration--) {
+											for (iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
+												if (program.getRuleslist().get(i).getBody().get(j).getArguments()
+														.get(iteration).equals(factPush.get(iteration2))) {
+													if (factPush.indexOf(factPush.get(iteration2)) == factPush
+															.lastIndexOf(factPush.get(iteration2)))
+														tempMap0.remove(factPush.get(iteration2));
+													else
+														System.out.println(
+																"This comes from previous predicate cannot be removed");
+												} else {
+													continue;
+												}
+											}
+										}
+										previousHash.clear();
+										previousHash.putAll(tempMap0);
+									}
+									k = factSelect.get(factSelect.size() - 1) + 1;
+								}
+								match(program.getRuleslist().get(i).getBody().get(j),
+										program.getFacts().get(k).getFact(), currentHash, previousHash);
+							}
 
 						}
-						temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
-						iteration3 = temparity;
-						while (iteration3 > 0) {
-							factPush.remove(factPush.size() - 1);
-							iteration3--;
-						}
-						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
-								currentHash, previousHash);	
 					}
-					
 				}
-			}
-		}
-		// else if (!mat)
-		else {
-			k = k + 1;
-			if (k < program.getFacts().size()) {
-				// k = k + 1;
-				currentHash.clear();
-				currentHash.putAll(tempMap0);
-				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
-						previousHash);
-
-			} else {
-				// System.out.println("This predicate cannot be true for the current edb");
-
-				j = j - 1;
-				if (j < 0) {
-					if (i == program.getRuleslist().size() - 1) {
-						currentHash.clear();
-						previousHash.clear();
-						return;
-					} else {
-						k = 0;
-						i = i + 1;
-						this.bodySize = program.getRuleslist().get(i).getBody().size();
-						factSelect.clear();
-						factPush.clear();
-						j = 0;
-						tempMap = new LinkedHashMap<String, String>();
-						tempMap0 = new LinkedHashMap<String, String>();
+				// else if (!mat)
+				else {
+					k = k + 1;
+					if (k < program.getFacts().size()) {
+						// k = k + 1;
 						currentHash.clear();
 						currentHash.putAll(tempMap0);
-						previousHash.clear();
-						previousHash.putAll(tempMap0);
-						// tempMap1 = new HashMap<String, String>();
-						// HashMap<String, String> tempMap0 = new HashMap<>();
-						bodySize = program.getRuleslist().get(i).getBody().size();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 								currentHash, previousHash);
 
-					}
-
-				} else {
-					tempMap.clear();
-					tempMap.putAll(previousHash);
-					temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
-					for (int iteration = temparity - 1; iteration >= 0; iteration--) {
-						for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
-							try {
-								if (program.getRuleslist().get(i).getBody().get(j).getArguments().get(iteration)
-										.equals(factPush.get(iteration2))) {
-									// ERROR Factpush has nothing and it is still trying to equate
-
-									if (factPush.indexOf(factPush.get(iteration2)) == factPush
-											.lastIndexOf(factPush.get(iteration2)))
-										tempMap.remove(factPush.get(iteration2));
-									else
-										System.out.println("This comes from previous predicate cannot be removed");
-								} else {
-									continue;
-								}
-							} catch (Exception E) {
-								continue;
-							}
-
-						}
-					}
-					int iteration3 = temparity;
-					while (iteration3 > 0) {
-						factPush.remove(factPush.size() - 1);
-						iteration3--;
-					}
-					// factPush = factPush.subList(factPush.size() - temparity, factPush.size());
-					currentHash.clear();
-					currentHash.putAll(tempMap);
-					if (j - 1 < 0) {
-						tempMap0.clear();
-						previousHash.clear();
 					} else {
-						tempMap0.clear();
-						tempMap0.putAll(tempMap);
-						temparity = program.getRuleslist().get(i).getBody().get(j - 1).getArity();
-						for (int iteration = temparity - 1; iteration >= 0; iteration--) {
-							for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
-								if (program.getRuleslist().get(i).getBody().get(j - 1).getArguments().get(iteration)
-										.equals(factPush.get(iteration2))) {
-									if (factPush.indexOf(factPush.get(iteration2)) == factPush
-											.lastIndexOf(factPush.get(iteration2)))
-										tempMap0.remove(factPush.get(iteration2));
-									else
-										System.out.println("This comes from previous predicate cannot be removed");
-								} else {
-									continue;
-								}
+						// System.out.println("This predicate cannot be true for the current edb");
 
-							}
-
-						}
-						previousHash.clear();
-						previousHash.putAll(tempMap0);
-
-					}
-					k = factSelect.get(factSelect.size() - 1) + 1;// get() gets -1 error
-					if (k == program.getFacts().size()) {
 						j = j - 1;
 						if (j < 0) {
-
 							if (i == program.getRuleslist().size() - 1) {
-								tempMap.clear();
-								tempMap0.clear();
 								currentHash.clear();
 								previousHash.clear();
-								factPush.clear();
-
-								factSelect.clear();
-								System.out.println("I am going home!!! not alone!!");
-								matchCount = 0;
 								return;
-								// System.exit(0);;
+							} else {
+								k = 0;
+								i = i + 1;
+								this.bodySize = program.getRuleslist().get(i).getBody().size();
+								factSelect.clear();
+								factPush.clear();
+								j = 0;
+								tempMap = new LinkedHashMap<String, String>();
+								tempMap0 = new LinkedHashMap<String, String>();
+								currentHash.clear();
+								currentHash.putAll(tempMap0);
+								previousHash.clear();
+								previousHash.putAll(tempMap0);
+								// tempMap1 = new HashMap<String, String>();
+								// HashMap<String, String> tempMap0 = new HashMap<>();
+								bodySize = program.getRuleslist().get(i).getBody().size();
+								match(program.getRuleslist().get(i).getBody().get(j),
+										program.getFacts().get(k).getFact(), currentHash, previousHash);
+
 							}
-							i = i + 1;
-							this.bodySize = program.getRuleslist().get(i).getBody().size();
-							j = 0;
-							k = 0;
+
+						} else {
+							tempMap.clear();
+							tempMap.putAll(previousHash);
+							temparity = program.getRuleslist().get(i).getBody().get(j).getArity();
+							for (int iteration = temparity - 1; iteration >= 0; iteration--) {
+								for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
+									try {
+										if (program.getRuleslist().get(i).getBody().get(j).getArguments().get(iteration)
+												.equals(factPush.get(iteration2))) {
+											// ERROR Factpush has nothing and it is still trying to equate
+
+											if (factPush.indexOf(factPush.get(iteration2)) == factPush
+													.lastIndexOf(factPush.get(iteration2)))
+												tempMap.remove(factPush.get(iteration2));
+											else
+												System.out.println(
+														"This comes from previous predicate cannot be removed");
+										} else {
+											continue;
+										}
+									} catch (Exception E) {
+										continue;
+									}
+
+								}
+							}
+							int iteration3 = temparity;
+							while (iteration3 > 0) {
+								factPush.remove(factPush.size() - 1);
+								iteration3--;
+							}
+							// factPush = factPush.subList(factPush.size() - temparity, factPush.size());
+							currentHash.clear();
+							currentHash.putAll(tempMap);
+							if (j - 1 < 0) {
+								tempMap0.clear();
+								previousHash.clear();
+							} else {
+								tempMap0.clear();
+								tempMap0.putAll(tempMap);
+								temparity = program.getRuleslist().get(i).getBody().get(j - 1).getArity();
+								for (int iteration = temparity - 1; iteration >= 0; iteration--) {
+									for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
+										if (program.getRuleslist().get(i).getBody().get(j - 1).getArguments()
+												.get(iteration).equals(factPush.get(iteration2))) {
+											if (factPush.indexOf(factPush.get(iteration2)) == factPush
+													.lastIndexOf(factPush.get(iteration2)))
+												tempMap0.remove(factPush.get(iteration2));
+											else
+												System.out.println(
+														"This comes from previous predicate cannot be removed");
+										} else {
+											continue;
+										}
+
+									}
+
+								}
+								previousHash.clear();
+								previousHash.putAll(tempMap0);
+
+							}
+							k = factSelect.get(factSelect.size() - 1) + 1;// get() gets -1 error
+							if (k == program.getFacts().size()) {
+								j = j - 1;
+								if (j < 0) {
+
+									if (i == program.getRuleslist().size() - 1) {
+										tempMap.clear();
+										tempMap0.clear();
+										currentHash.clear();
+										previousHash.clear();
+										factPush.clear();
+
+										factSelect.clear();
+										System.out.println("I am going home!!! not alone!!");
+										matchCount = 0;
+										return;
+										// System.exit(0);;
+									}
+									i = i + 1;
+									this.bodySize = program.getRuleslist().get(i).getBody().size();
+									j = 0;
+									k = 0;
+								}
+								// return;
+							}
+							factSelect.remove(factSelect.size() - 1);
+							match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
+									currentHash, previousHash);
+
 						}
-						// return;
 					}
-					factSelect.remove(factSelect.size() - 1);
-					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
-							currentHash, previousHash);
 
 				}
+
 			}
-
 		}
-
 	}
 }
