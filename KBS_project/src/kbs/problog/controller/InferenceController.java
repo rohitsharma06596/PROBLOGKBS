@@ -22,6 +22,7 @@ public class InferenceController {
 
 	/** The match count. */
 	int matchCount;
+	int count;
 
 	/** The temp map. */
 	LinkedHashMap<String, String> tempMap = new LinkedHashMap<>();
@@ -64,19 +65,31 @@ public class InferenceController {
 	 */
 	public InferenceController(ProgramModel program) {
 		this.program = program;
-		factSize = this.program.getFacts().size();
-		bodySize = this.program.getRuleslist().get(0).getBody().size();
-		probArr = new ArrayList<>();
-		match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact(), parmMap, parmMap0);
-		this.finalise_Idb();
-		for (int l = 0; l < this.program.getIdb().size(); l++) {
-			System.out.println(
-					"In the inference Controller " + this.program.getIdb().get(l).getFact().getFact().getProbability());
+
+		while (count >= 0) {
+			this.factSize = this.program.getFacts().size();
+			this.bodySize = this.program.getRuleslist().get(0).getBody().size();
+			probArr = new ArrayList<>();
+			i = 0;
+			j = 0;
+			k = 0;
+			parmMap.clear();
+			parmMap0.clear();
+			match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact(), parmMap,
+					parmMap0);
+			this.finalise_Idb();
+			/*
+			 * for (int l = 0; l < this.program.getIdb().size(); l++) { System.out.println(
+			 * "In the inference Controller " +
+			 * this.program.getIdb().get(l).getFact().getFact().getProbability()); }
+			 */
+			this.finalizeIteration();
 		}
-		this.finalizeIteration();
-		for (int l = 0; l < this.program.getFacts().size(); l++) {
-			System.out.println("In the inference Controller " + program.getFacts().get(l).getFact().getProbability());
-		}
+		/*
+		 * for (int l = 0; l < this.program.getFacts().size(); l++) { }
+		 * System.out.println("In the inference Controller " +
+		 * program.getFacts().get(l).getFact().getProbability()); }
+		 */
 	}
 
 	/**
@@ -121,7 +134,7 @@ public class InferenceController {
 	 * Finalize iteration.
 	 */
 	public void finalizeIteration() {
-		int count = 0;
+		count = 0;
 		List<FactModel> finals = new ArrayList<>();
 		for (int i = 0; i < program.getIdb().size(); i++) {
 			for (int j = 0; j < program.getFacts().size(); j++) {
@@ -144,7 +157,7 @@ public class InferenceController {
 								program.getIdb().remove(i);
 							} else {
 								program.getFacts().remove(j);
-								count++;
+								// count++;
 							}
 							break;
 						} else {
@@ -160,19 +173,21 @@ public class InferenceController {
 			}
 
 		} // Akhu idb list edb ma nakhvanu che;
+		count = program.getIdb().size();
 		if (count > 0) {
 			for (int i = 0; i < program.getIdb().size(); i++) {
 				finals.add(program.getIdb().get(i).getFact());
 			}
 			program.setFacts(finals);
+			program.getIdb().clear();
 			/*
 			 * for(int i=0;i<program.getIdb().size();i++) {
 			 * System.out.println("The final IDB set contains: " +
 			 * program.getIdb().get(i).getFact().getFact()); }
 			 */
-			// System.out.println("Call the next ieration here");
+
 		} else if (count == 0) {
-			// System.out.println("The Fix point is found");
+			System.out.println("The Fix point is found");
 			return;
 		}
 	}
@@ -349,7 +364,7 @@ public class InferenceController {
 						matchCount--;
 						k++;
 						factSelect.clear();
-						factPush.clear();
+						// factPush.clear();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
 								currentHash, previousHash);
 
@@ -377,6 +392,13 @@ public class InferenceController {
 							if (i == program.getRuleslist().size()) {
 								currentHash.clear();
 								previousHash.clear();
+								tempMap.clear();
+								tempMap0.clear();
+								currentHash.clear();
+								factPush.clear();
+								factSelect.clear();
+								matchCount = 0;
+
 								return;
 							}
 							match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(),
@@ -390,10 +412,11 @@ public class InferenceController {
 				}
 			}
 		}
-		if (!mat) {
+		// else if (!mat)
+		else {
 			k = k + 1;
 			if (k < program.getFacts().size()) {
-				k = k + 1;
+				// k = k + 1;
 				currentHash.clear();
 				currentHash.putAll(tempMap0);
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact(), currentHash,
@@ -437,6 +460,7 @@ public class InferenceController {
 						for (int iteration2 = temparity - 1; iteration2 >= 0; iteration2--) {
 							if (program.getRuleslist().get(i).getBody().get(j).getArguments().get(iteration)
 									.equals(factPush.get(iteration2))) {
+						//	ERROR	 Factpush has nothing and it is still trying to equate
 								if (factPush.indexOf(factPush.get(iteration2)) == factPush
 										.lastIndexOf(factPush.get(iteration2)))
 									tempMap.remove(factPush.get(iteration2));
@@ -483,13 +507,21 @@ public class InferenceController {
 						previousHash.putAll(tempMap0);
 
 					}
-					k = factSelect.get(factSelect.size() - 1) + 1;
+					k = factSelect.get(factSelect.size() - 1) + 1;// get() gets -1 error
 					if (k == program.getFacts().size()) {
 						j = j - 1;
 						if (j < 0) {
 
 							if (i == program.getRuleslist().size() - 1) {
+								tempMap.clear();
+								tempMap0.clear();
+								currentHash.clear();
+								previousHash.clear();
+								factPush.clear();
+
+								factSelect.clear();
 								System.out.println("I am going home!!! not alone!!");
+								matchCount = 0;
 								return;
 								// System.exit(0);;
 							}
