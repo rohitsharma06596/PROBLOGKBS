@@ -61,8 +61,10 @@ public class InferenceController {
 	 */
 	public InferenceController(ProgramModel program) {
 		this.program = program;
+		
 
 		 do{
+			 
 			this.factSize = this.program.getFacts().size();
 			this.bodySize = this.program.getRuleslist().get(0).getBody().size();
 			probArr = new ArrayList<>();
@@ -124,7 +126,8 @@ public class InferenceController {
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().add(new_prob);
 			}
-			program.getIdb().get(j).getFact().getFact().setProbability(program.getIdb().get(i).getProb_fact().get(0));
+			System.out.println("The final probability array:"+program.getIdb().get(j).getProb_fact());
+			program.getIdb().get(j).getFact().getFact().setProbability(program.getIdb().get(j).getProb_fact().get(0));
 			System.out.println("Inside finlizeidb and after disjunction: "
 					+ program.getIdb().get(j).getFact().getFact().getProbability());
 		}
@@ -143,7 +146,7 @@ public class InferenceController {
 						.getPredName()) {
 					{
 						boolean match = false;
-						for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) {
+						for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) { //check arity as well
 							if (program.getIdb().get(i).getFact().getFact().getArguments().get(k)
 									.equals(program.getFacts().get(j).getFact().getArguments().get(k))) {
 								match = true;
@@ -153,9 +156,13 @@ public class InferenceController {
 							}
 						}
 						if (match == true) {
-							if (program.getIdb().get(i).getFact().getFact().getProbability() == program.getFacts()
-									.get(j).getFact().getProbability()) {
+							System.out.println(program.getIdb().get(i).getFact().getFact().getProbability()+" " + " " +program.getFacts()
+									.get(j).getFact().getProbability());
+							double prob1 = program.getIdb().get(i).getFact().getFact().getProbability();
+							double prob2 = program.getFacts().get(j).getFact().getProbability();
+							if (prob1 == prob2) {
 								program.getIdb().remove(i);
+								i=i-1;
 							} else {
 							//	program.getFacts().remove(j);
 								 count++;
@@ -182,6 +189,7 @@ public class InferenceController {
 			}
 			program.setFacts(finals);
 			program.getIdb().clear();
+			finals.clear();
 			/*
 			 * for(int i=0;i<program.getIdb().size();i++) {
 			 * System.out.println("The final IDB set contains: " +
@@ -300,8 +308,6 @@ public class InferenceController {
 						program.getIdb().get(i).setProb_fact(tempFact.getFact().getProbability());
 						// System.out.println("Inside infer Idb, the probs are:
 						// "+program.getIdb().get(i).getProb_fact());
-						System.out.println(
-								"Inside infer Idb, the IDB is: " + program.getIdb().get(i).getFact().getFact());
 					} else if ((i == size - 1) && !argMatch) {
 						IdbModel tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 						program.setIdb(tempIdb);
@@ -349,6 +355,7 @@ public class InferenceController {
 					matchCount--;
 					tempMap.clear();
 					tempMap.putAll(tempMap0);
+					factSelect.remove(factSelect.size() - 1);
 				//	tempMap0.clear();
 					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 				}
@@ -361,7 +368,9 @@ public class InferenceController {
 						tempMap.putAll(tempMap0);
 					//	tempMap0.clear();
 						probArr.remove(probArr.size()-1);
+						System.out.println(factSelect);
 						factSelect.remove(factSelect.size() - 1);
+						System.out.println(factSelect);
 						k = factSelect.get(factSelect.size() - 1);
 						matchCount--;
 						if(k+1==factSize)
@@ -404,6 +413,7 @@ public class InferenceController {
 					}
 					else
 					{
+						k=0;
 						if(i+1==program.getRuleslist().size())
 						{
 							matchCount = 0;
@@ -443,8 +453,11 @@ public class InferenceController {
 					j=j-1;
 					tempMap.clear();
 					tempMap.putAll(tempMap0);
-					probArr.remove(probArr.size()-1);
+					
+					
 					k = factSelect.get(factSelect.size() - 1);
+					System.out.println(factSelect+" "+k);
+					
 					matchCount--;   //can make it zero
 					if(k+1==factSize)
 					{
@@ -454,7 +467,7 @@ public class InferenceController {
 						{
 							matchCount=0;
 							tempMap.clear();
-							tempMap.putAll(tempMap0);
+							tempMap0.clear();
 							factSelect.clear();
 							probArr.clear();
 							return;
@@ -474,17 +487,19 @@ public class InferenceController {
 					else
 					{
 						k++;
+						tempMap.clear();
 						
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 					}
 				}
 				else
 				{
+					k=0;
 					if(i+1 == program.getRuleslist().size())
 					{
 						matchCount=0;
 						tempMap.clear();
-						tempMap.putAll(tempMap0);
+						tempMap0.clear();
 						factSelect.clear();
 						probArr.clear();
 						return;
@@ -494,7 +509,7 @@ public class InferenceController {
 						i=i+1;
 						tempMap.clear();
 						tempMap0.clear();
-						bodySize = program.getRuleslist().get(i).getBody().size()-1;
+						bodySize = program.getRuleslist().get(i).getBody().size();
 						probArr.clear();
 						matchCount=0;
 						factSelect.clear();
