@@ -1,5 +1,9 @@
 package kbs.problog.controller;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +19,7 @@ import kbs.problog.model.RulesModel;
 /**
  * The Class InferenceController.
  */
-public class InferenceController {
+public class SemiNaiveEval {
 
 	/** The program. */
 	private ProgramModel program = new ProgramModel();
@@ -61,12 +65,17 @@ public class InferenceController {
 	 * Instantiates a new inference controller.
 	 *
 	 * @param program the program
+	 * @throws IOException
 	 */
-	public InferenceController(ProgramModel program) {
+	public SemiNaiveEval(ProgramModel program) throws IOException {
 		this.program = program;
 		edbTag = new ArrayList<FactModel>();
 		prevEdb = new ArrayList<FactModel>();
 		ruleFire = new ArrayList<RulesModel>();
+
+		FileWriter writer = new FileWriter("C:\\Users\\ADMIN\\Desktop\\Output_seminaive.txt");
+		PrintWriter pwriter = new PrintWriter(writer);
+
 		for (int i = 0; i < program.getRuleslist().size(); i++) {
 			RulesModel rule = new RulesModel();
 			rule.setHead(program.getRuleslist().get(i).getHead());
@@ -77,7 +86,6 @@ public class InferenceController {
 				// body.setProbability(program.getRuleslist().get(i).getBody().get(j).getProbability());
 				body.setArguments(program.getRuleslist().get(i).getBody().get(j).getArguments());
 				rule.setBody(body);
-				System.out.println("just chck");
 			}
 			ruleFire.add(rule);
 		}
@@ -101,27 +109,35 @@ public class InferenceController {
 			j = 0;
 			k = 0;
 
-			System.out.println("iteration number is" + iter);
+			// System.out.println("iteration number is" + iter);
+			// pwriter.println();
+			// pwriter.println("Iteration #: " + iter);
 			iter++;
 			matchCount = 0;
 			match(this.ruleFire.get(0).getBody().get(0), this.prevEdb.get(0).getFact());
 			this.finalise_Idb();
 
 			count = this.finalizeIteration();
-			for (int l = 0; l < program.getFacts().size(); l++) {
-				System.out.println(program.getFacts().get(l).getFact());
-			
-			}
-
+			/*
+			 * for (int l = 0; l < program.getFacts().size(); l++) { //
+			 * System.out.println(program.getFacts().get(l).getFact());
+			 * pwriter.println(program.getFacts().get(l).getFact());
+			 * 
+			 * 
+			 * }
+			 */
 		} while (count > 0);
+		pwriter.println();
+		pwriter.println("Iteration #: " + iter);
 
-		/*
-		 * for (int l = 0; l < this.program.getFacts().size(); l++) {
-		 * System.out.println(program.getFacts().get(l).getFact()); }
-		 */
+		for (int l = 0; l < this.program.getFacts().size(); l++) {
+			System.out.println(program.getFacts().get(l).getFact());
+			pwriter.println(program.getFacts().get(l).getFact());
+		}
 
+		writer.close();
+		pwriter.close();
 		System.out.println(program.getFacts().size());
-		
 
 	}
 
@@ -235,48 +251,40 @@ public class InferenceController {
 			}
 			this.prevEdb.clear();
 			program.setFacts(finals);
-			for(int i=0;i<edbTag.size();i++)
-			{
+			for (int i = 0; i < edbTag.size(); i++) {
 				FactModel fact = new FactModel();
 				fact.setFact(edbTag.get(i).getFact());
 				prevEdb.add(fact);
 			}
-			for(int i=0;i<finals.size();i++)
-			{
+			for (int i = 0; i < finals.size(); i++) {
 				FactModel fact = new FactModel();
 				fact.setFact(finals.get(i).getFact());
 				prevEdb.add(fact);
 			}
-			
+
 			program.getIdb().clear();
-			//finals.clear();
+			// finals.clear();
 			ruleFire.clear();
-		//	ruleFire = new ArrayList<RulesModel>();
-			for(int i=0;i<program.getRuleslist().size();i++)
-			{
-				for(int j=0;j<program.getRuleslist().get(i).getBody().size();j++)
-				{
-					for(int k =0;k<finals.size();k++)
-					{
+			// ruleFire = new ArrayList<RulesModel>();
+			for (int i = 0; i < program.getRuleslist().size(); i++) {
+				for (int j = 0; j < program.getRuleslist().get(i).getBody().size(); j++) {
+					for (int k = 0; k < finals.size(); k++) {
 						RulesModel rule = new RulesModel();
 						rule.setHead(program.getRuleslist().get(i).getHead());
-						if(program.getRuleslist().get(i).getBody().get(j).getPredName().equals(finals.get(k).getFact().getPredName()))
-						{
-							for(int a=0;a<program.getRuleslist().get(i).getBody().size();a++)
-							{
+						if (program.getRuleslist().get(i).getBody().get(j).getPredName()
+								.equals(finals.get(k).getFact().getPredName())) {
+							for (int a = 0; a < program.getRuleslist().get(i).getBody().size(); a++) {
 								PredicateModel body = new PredicateModel();
 								body.setPredName(program.getRuleslist().get(i).getBody().get(a).getPredName());
 								body.setArity(program.getRuleslist().get(i).getBody().get(a).getArity());
 								// body.setProbability(program.getRuleslist().get(i).getBody().get(j).getProbability());
 								body.setArguments(program.getRuleslist().get(i).getBody().get(a).getArguments());
 								rule.setBody(body);
-								
+
 							}
 							ruleFire.add(rule);
 							break;
-						}
-						else
-						{
+						} else {
 							continue;
 						}
 					}

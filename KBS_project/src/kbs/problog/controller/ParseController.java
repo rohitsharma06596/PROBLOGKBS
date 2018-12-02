@@ -167,7 +167,8 @@ public class ParseController {
 		}*/
 		prog.setFacts(facts);
 		in_buf.close();
-		InferenceController ic = new InferenceController(prog);
+		SemiNaiveEval seminaive = new SemiNaiveEval(prog);
+	//	NaiveEval naive = new NaiveEval(prog);
 	}
 	
 	
