@@ -1,6 +1,5 @@
 package kbs.problog.model;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FactModel.
  */
@@ -8,6 +7,7 @@ public class FactModel {
 
 	/** The fact. */
 	private PredicateModel fact = new PredicateModel();
+
 	/**
 	 * Gets the fact.
 	 *
@@ -29,10 +29,4 @@ public class FactModel {
 		this.fact.setArguments(fact.getArguments());
 	}
 
-	/**
-	 * Addfact.
-	 *
-	 * @param p the p
-	 */
-	
 }

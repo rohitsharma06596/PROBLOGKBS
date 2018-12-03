@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import kbs.problog.model.FactModel;
 import kbs.problog.model.PredicateModel;
 import kbs.problog.model.ProgramModel;
 import kbs.problog.model.RulesModel;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ParseController.
  */
@@ -25,9 +25,11 @@ public class ParseController {
 	FactModel f = new FactModel();
 
 	/** The r. */
-	RulesModel r = new RulesModel(); 
+	RulesModel r = new RulesModel();
 	/** The rules. */
 	List<RulesModel> rules = new ArrayList<RulesModel>();
+	
+	/** The facts. */
 	List<FactModel> facts = new ArrayList<FactModel>();
 
 	/** The prog. */
@@ -148,8 +150,6 @@ public class ParseController {
 			if (line.contains(":-")) {
 				rule(line);
 				rules.add(r);
-				//prog.setRuleslist(rules);
-
 				r = new RulesModel();
 			} else {
 				fact(line);
@@ -157,19 +157,15 @@ public class ParseController {
 				f = new FactModel();
 			}
 		}
-		
-		/*for (int i = 0; i < rules.size(); i++) {
-			System.out.println(rules.get(i).getHead());
-		}*/
 		prog.setRuleslist(rules);
-		/*for (int i = 0; i < facts.size(); i++) {
-			System.out.println(facts.get(i).getFact());
-		}*/
 		prog.setFacts(facts);
 		in_buf.close();
-		SemiNaiveEval seminaive = new SemiNaiveEval(prog);
-	//	NaiveEval naive = new NaiveEval(prog);
+		String choice = JOptionPane.showInputDialog("Please Enter 1 for Naive and 2 for Semi-Naive");
+		if (choice == "1") {
+			NaiveEval naive = new NaiveEval(prog);
+		} else {
+			SemiNaiveEval seminaive = new SemiNaiveEval(prog);
+		}
 	}
-	
-	
+
 }

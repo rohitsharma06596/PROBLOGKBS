@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +13,6 @@ import kbs.problog.model.FactModel;
 import kbs.problog.model.IdbModel;
 import kbs.problog.model.PredicateModel;
 import kbs.problog.model.ProgramModel;
-
-
 
 public class NaiveEval {
 
@@ -35,10 +32,7 @@ public class NaiveEval {
 	/** The fact select. */
 	List<Integer> factSelect = new ArrayList<Integer>();
 
-	/** The parm map. */
-
 	/** The fact size. */
-	// HashMap<String, String> tempMap1 = new HashMap<>();
 	int factSize;
 
 	/** The fact push. */
@@ -55,61 +49,54 @@ public class NaiveEval {
 
 	/** The prob arr. */
 	List<Double> probArr;
-	int iter=1;
+	int iter = 1;
+
 	/**
 	 * Instantiates a new inference controller.
 	 *
 	 * @param program the program
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public NaiveEval(ProgramModel program) throws IOException {
 		this.program = program;
 		FileWriter writer = new FileWriter("C:\\Users\\ADMIN\\Desktop\\Output_naive.txt");
 		PrintWriter pwriter = new PrintWriter(writer);
-		
 
-		 do{
-			 System.gc();
+		do {
+			System.gc();
 			this.factSize = this.program.getFacts().size();
 			this.bodySize = this.program.getRuleslist().get(0).getBody().size();
 			probArr = new ArrayList<>();
 			i = 0;
 			j = 0;
 			k = 0;
-			
-			System.out.println("iteration number is"+ iter);
+
+			System.out.println("iteration number is" + iter);
 			iter++;
 			matchCount = 0;
 			match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
 			this.finalise_Idb();
-			
-			
-			 
+
 			count = this.finalizeIteration();
-			 for (int l = 0; l < this.program.getFacts().size(); l++) { 
-				  System.out.println(program.getFacts().get(l).getFact());
-				  } 
-			
-		}while(count>0);
-		 
-			pwriter.println();
-			pwriter.println("Iteration #: " + iter);
-			
 			for (int l = 0; l < this.program.getFacts().size(); l++) {
+				System.out.println(program.getFacts().get(l).getFact());
+			}
+
+		} while (count > 0);
+
+		pwriter.println();
+		pwriter.println("Iteration #: " + iter);
+
+		for (int l = 0; l < this.program.getFacts().size(); l++) {
 			System.out.println(program.getFacts().get(l).getFact());
 			pwriter.println(program.getFacts().get(l).getFact());
-			}
-			
-			
-			writer.close();
-			pwriter.close();
-		 
-		
-		 /* for (int l = 0; l < this.program.getFacts().size(); l++) { 
-		  System.out.println(program.getFacts().get(l).getFact());
-		  }*/
-		 System.out.println(program.getFacts().size());
-		 
+		}
+
+		writer.close();
+		pwriter.close();
+
+		System.out.println(program.getFacts().size());
+
 	}
 
 	/**
@@ -121,34 +108,28 @@ public class NaiveEval {
 	 */
 	public double disjunctionInd(double p1, double p2) {
 		double pro = (p1 + p2) - (p1 * p2);
-	//	System.out.println("Inside disjunction disjuncted probability is: " + pro);
-		
 		return pro;
 	}
-	public double disjunctionMax(double p1, double p2)
-	{
+
+	public double disjunctionMax(double p1, double p2) {
 		double max;
-		if(p1>p2) {
+		if (p1 > p2) {
 			max = p1;
-		}
-		else {
+		} else {
 			max = p2;
 		}
 		return max;
-			
+
 	}
-	public boolean certChange(Double p1, Double p2)
-	{
-		
-		if(p1-p2>0.01)
-		{
+
+	public boolean certChange(Double p1, Double p2) {
+
+		if (p1 - p2 > 0.01) {
 			return false;
-		}
-		else
-		{
+		} else {
 			return true;
 		}
-		
+
 	}
 
 	/**
@@ -165,7 +146,7 @@ public class NaiveEval {
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().add(new_prob);
 			}
-			
+
 			program.getIdb().get(j).getFact().getFact().setProbability(program.getIdb().get(j).getProb_fact().get(0));
 			program.getIdb().get(j).getProb_fact().clear();
 		}
@@ -180,14 +161,16 @@ public class NaiveEval {
 		List<FactModel> finals = new ArrayList<>();
 		for (int i = 0; i < program.getIdb().size(); i++) {
 			for (int j = 0; j < program.getFacts().size(); j++) {
-				if (program.getIdb().get(i).getFact().getFact().getPredName().equals(program.getFacts().get(j).getFact()
-						.getPredName())) {
+				if (program.getIdb().get(i).getFact().getFact().getPredName()
+						.equals(program.getFacts().get(j).getFact().getPredName())) {
 					{
 						boolean match = false;
-						for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) { //check arity as well
+						for (int k = 0; k < program.getIdb().get(i).getFact().getFact().getArity(); k++) { // check
+																											// arity as
+																											// well
 							if (program.getIdb().get(i).getFact().getFact().getArguments().get(k)
 									.equals(program.getFacts().get(j).getFact().getArguments().get(k))) {
-								
+
 								match = true;
 							} else {
 								match = false;
@@ -199,24 +182,24 @@ public class NaiveEval {
 							double prob2 = program.getFacts().get(j).getFact().getProbability();
 							if (prob1 <= prob2) {
 								program.getIdb().remove(i);
-								i=i-1;
-							} else{
+								i = i - 1;
+							} else {
 								program.getFacts().remove(j);
-								j=j-1;//If exist in EBD with different probability
-								 count++;
+								j = j - 1;
+								count++;
 								continue;
 							}
 							break;
 						} else {
 							continue;
 						}
-						
+
 					}
 				}
 
 			}
 
-		} 
+		}
 		count = program.getIdb().size();
 		if (count > 0) {
 			for (int i = 0; i < program.getIdb().size(); i++) {
@@ -225,12 +208,10 @@ public class NaiveEval {
 			program.setFacts(finals);
 			program.getIdb().clear();
 			finals.clear();
-			
 
 		} else if (count == 0) {
 			System.out.println("The Fix point is found");
-			 
-				 
+
 		}
 		return count;
 	}
@@ -238,9 +219,9 @@ public class NaiveEval {
 	/**
 	 * Predicate matching.
 	 *
-	 * @param parmPred    the parm pred
-	 * @param parmFact    the parm fact
-	 * @param tempMap the current hash
+	 * @param parmPred the parm pred
+	 * @param parmFact the parm fact
+	 * @param tempMap  the current hash
 	 * @return true, if successful
 	 */
 	public boolean predicateMatching(PredicateModel parmPred, PredicateModel parmFact) {
@@ -263,14 +244,12 @@ public class NaiveEval {
 						}
 					}
 				} catch (NullPointerException e) {
-					// System.out.println("Our hash map is empty");
 					tempMap.put(parmPred.getArguments().get(i), parmFact.getArguments().get(i));
 
 				}
 			}
 			matchCount++;
 			probArr.add(parmFact.getProbability());
-			// tempMap1 = tempMap;
 			return true;
 		}
 	}
@@ -296,17 +275,15 @@ public class NaiveEval {
 		List<String> argum = new ArrayList<>();
 		Set<String> keySet = tempMap.keySet();
 		List<String> keys = new ArrayList<>(keySet);
-		// argum = tempFact.getFact().getArguments();
 		for (int a = 0; a < tempFact.getFact().getArguments().size(); a++) {
 			argum.add(tempFact.getFact().getArguments().get(a));
 		}
 		for (int i = 0; i < argum.size(); i++) {
-				for(int j=0;j<keys.size();j++)
-				{
-					if (argum.get(i).equals(keys.get(j))) {
-						argum.set(i, tempMap.get(keys.get(j)));
-					}
+			for (int j = 0; j < keys.size(); j++) {
+				if (argum.get(i).equals(keys.get(j))) {
+					argum.set(i, tempMap.get(keys.get(j)));
 				}
+			}
 		}
 		tempFact.getFact().getArguments().clear();
 		tempFact.getFact().setArguments(argum);
@@ -318,13 +295,12 @@ public class NaiveEval {
 			IdbModel tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 			program.setIdb(tempIdb);
 		} else {
-			int size =  program.getIdb().size();
+			int size = program.getIdb().size();
 			for (i = 0; i < size; i++) {
-				factMatch  = false;
+				factMatch = false;
 				if (tempFact.getFact().getPredName()
 						.equals(program.getIdb().get(i).getFact().getFact().getPredName())) {
 					factMatch = true;
-					// System.out.println(factMatch);
 				}
 				if (factMatch) {
 					argMatch = false;
@@ -332,7 +308,6 @@ public class NaiveEval {
 						if (program.getIdb().get(i).getFact().getFact().getArguments().get(j)
 								.equals(tempFact.getFact().getArguments().get(j))) {
 							argMatch = true;
-							// System.out.println("bsdhfb");
 						} else {
 							argMatch = false;
 							break;
@@ -341,8 +316,7 @@ public class NaiveEval {
 					if (argMatch) {
 						program.getIdb().get(i).setProb_fact(tempFact.getFact().getProbability());
 						return;
-					}
-					else if ((i == size - 1) && !argMatch) {
+					} else if ((i == size - 1) && !argMatch) {
 						IdbModel tempIdb = new IdbModel(tempFact, tempFact.getFact().getProbability());
 						program.setIdb(tempIdb);
 					}
@@ -355,9 +329,7 @@ public class NaiveEval {
 
 			}
 		}
-		
 
-		
 	}
 
 	/**
@@ -365,205 +337,151 @@ public class NaiveEval {
 	 *
 	 * @param p            the p
 	 * @param f            the f
-	 * @param tempMap  the current hash
-	 * @param previousHash the previous hash
 	 */
 	public void match(PredicateModel p, PredicateModel f) {
 		mat = this.predicateMatching(p, f);
-		if(mat)
-		{
+		if (mat) {
 			factSelect.add(k);
-			if(matchCount==bodySize)
-			{
+			if (matchCount == bodySize) {
 				inferIDB(program.getRuleslist().get(i).getHead(), probArr);
-				if(k+1<factSize)
-				{
+				if (k + 1 < factSize) {
 					k++;
-					probArr.remove(probArr.size()-1);
+					probArr.remove(probArr.size() - 1);
 					matchCount--;
 					tempMap.clear();
 					tempMap.putAll(tempMap0);
 					factSelect.remove(factSelect.size() - 1);
-				//	tempMap0.clear();
 					match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
-				}
-				else
-				{
-					if(j>0)
-					{
-						j=j-1;
+				} else {
+					if (j > 0) {
+						j = j - 1;
 						tempMap.clear();
-					//	tempMap.putAll(tempMap0);   //sp
-						tempMap0.clear();   
-						probArr.remove(probArr.size()-1);
-					//	System.out.println(factSelect);
+						tempMap0.clear();
+						probArr.remove(probArr.size() - 1);
 						factSelect.remove(factSelect.size() - 1);
-					//	System.out.println(factSelect);
 						k = factSelect.get(factSelect.size() - 1);
 						matchCount--;
-						if(k+1==factSize)
-						{
-							j=0;
-							k=0;
-							
-							if(i+1==program.getRuleslist().size())
-							{
+						if (k + 1 == factSize) {
+							j = 0;
+							k = 0;
+
+							if (i + 1 == program.getRuleslist().size()) {
 								tempMap.clear();
 								tempMap0.clear();
 								matchCount = 0;
 								factSelect.clear();
 								probArr.clear();
 								return;
-							}
-							else
-							{
-								i=i+1;
+							} else {
+								i = i + 1;
 								tempMap.clear();
 								tempMap0.clear();
 								probArr.clear();
-								matchCount=0;
+								matchCount = 0;
 								factSelect.clear();
 								bodySize = program.getRuleslist().get(i).getBody().size();
-								match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
+								match(program.getRuleslist().get(i).getBody().get(j),
+										program.getFacts().get(k).getFact());
 							}
-						}
-						else
-						{
-							if(k+1<factSize)
-							{
+						} else {
+							if (k + 1 < factSize) {
 								k++;
 								matchCount--;
-								probArr.remove(probArr.size()-1);
-								factSelect.remove(factSelect.size()-1);
+								probArr.remove(probArr.size() - 1);
+								factSelect.remove(factSelect.size() - 1);
 								tempMap.clear();
-													//sp
-							/*	if(j==0)
-								{
-									tempMap0.clear();
-								}
-								else {
-									tempMap.putAll(tempMap0);
-								}*/
-								// sp
 								tempMap.putAll(tempMap0);
-								match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
+								match(program.getRuleslist().get(i).getBody().get(j),
+										program.getFacts().get(k).getFact());
 							}
 						}
-					}
-					else
-					{
-						k=0;
-						if(i+1==program.getRuleslist().size())
-						{
+					} else {
+						k = 0;
+						if (i + 1 == program.getRuleslist().size()) {
 							matchCount = 0;
 							tempMap.clear();
 							tempMap0.clear();
 							factSelect.clear();
 							probArr.clear();
 							return;
-						}
-						else
-						{
-							i=i+1;
-							j=0;
+						} else {
+							i = i + 1;
+							j = 0;
 							tempMap.clear();
 							tempMap0.clear();
 							probArr.clear();
-							matchCount=0;
+							matchCount = 0;
 							factSelect.clear();
 							bodySize = program.getRuleslist().get(i).getBody().size();
 							match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 						}
 					}
 				}
-			}
-			else
-			{
-				j=j+1;
-				k=0;
+			} else {
+				j = j + 1;
+				k = 0;
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 			}
-		}
-		else
-		{
-			if(k==factSize-1)
-			{
-				if(j>0)
-				{
-					j=j-1;
+		} else {
+			if (k == factSize - 1) {
+				if (j > 0) {
+					j = j - 1;
 					tempMap.clear();
-				//	tempMap.putAll(tempMap0);
-					tempMap0.clear();			//sp
-					
+					tempMap0.clear();
 					k = factSelect.get(factSelect.size() - 1);
-				//	System.out.println(factSelect+" "+k);
-					
-					matchCount--;   //can make it zero
-					if(k+1==factSize)
-					{
-						j=0;
-						k=0;
-						if(i+1==program.getRuleslist().size())
-						{
-							matchCount=0;
+					matchCount--;
+					if (k + 1 == factSize) {
+						j = 0;
+						k = 0;
+						if (i + 1 == program.getRuleslist().size()) {
+							matchCount = 0;
 							tempMap.clear();
 							tempMap0.clear();
 							factSelect.clear();
 							probArr.clear();
 							return;
-						}
-						else
-						{
-							i=i+1;
+						} else {
+							i = i + 1;
 							tempMap.clear();
 							tempMap0.clear();
 							probArr.clear();
-							matchCount=0;
+							matchCount = 0;
 							factSelect.clear();
 							bodySize = program.getRuleslist().get(i).getBody().size();
 							match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 						}
-					}
-					else
-					{
+					} else {
 						k++;
 						tempMap.clear();
-						
+
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 					}
-				}
-				else
-				{
-					k=0;
-					if(i+1 == program.getRuleslist().size())
-					{
-						matchCount=0;
+				} else {
+					k = 0;
+					if (i + 1 == program.getRuleslist().size()) {
+						matchCount = 0;
 						tempMap.clear();
 						tempMap0.clear();
 						factSelect.clear();
 						probArr.clear();
 						return;
-					}
-					else
-					{
-						i=i+1;
+					} else {
+						i = i + 1;
 						tempMap.clear();
 						tempMap0.clear();
 						bodySize = program.getRuleslist().get(i).getBody().size();
 						probArr.clear();
-						matchCount=0;
+						matchCount = 0;
 						factSelect.clear();
 						match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
 					}
 				}
-			}
-			else
-			{
-				k=k+1;
+			} else {
+				k = k + 1;
 				match(program.getRuleslist().get(i).getBody().get(j), program.getFacts().get(k).getFact());
-				
+
 			}
 		}
-		
+
 	}
 }

@@ -3,7 +3,6 @@ package kbs.problog.model;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PredicateModel.
  */
@@ -11,13 +10,13 @@ public class PredicateModel {
 
 	/** The pred name. */
 	private String predName;
-	
+
 	/** The arity. */
 	private int arity;
-	
+
 	/** The arguments. */
 	private List<String> arguments = new ArrayList<String>();
-	
+
 	/** The probability. */
 	private Double probability;
 
@@ -26,10 +25,15 @@ public class PredicateModel {
 	 *
 	 * @return the pred name
 	 */
-	public PredicateModel()
-	{
-		
+	public PredicateModel() {
+
 	}
+
+	/**
+	 * Gets the pred name.
+	 *
+	 * @return the pred name
+	 */
 	public String getPredName() {
 		return predName;
 	}
@@ -76,11 +80,10 @@ public class PredicateModel {
 	 * @param arguments the new arguments
 	 */
 	public void setArguments(List<String> arguments) {
-		for(int a=0;a<arguments.size();a++)
-		{
+		for (int a = 0; a < arguments.size(); a++) {
 			this.arguments.add(arguments.get(a));
 		}
-		//this.arguments = arguments;
+		// this.arguments = arguments;
 	}
 
 	/**
@@ -104,7 +107,7 @@ public class PredicateModel {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	@Override
+	@Override	
 	public String toString() {
 		return "Predicate [predName=" + predName + ", arity=" + arity + ", arguments=" + arguments + ", probability="
 				+ probability + "]";

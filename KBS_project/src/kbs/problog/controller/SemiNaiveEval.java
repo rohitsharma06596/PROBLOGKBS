@@ -1,6 +1,5 @@
 package kbs.problog.controller;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,9 +25,17 @@ public class SemiNaiveEval {
 
 	/** The match count. */
 	int matchCount;
+
+	/** The count. */
 	int count;
+
+	/** The edb tag. */
 	List<FactModel> edbTag;
+
+	/** The prev edb. */
 	List<FactModel> prevEdb;
+
+	/** The rule fire. */
 	List<RulesModel> ruleFire;
 	/** The temp map. */
 	HashMap<String, String> tempMap = new HashMap<>();
@@ -39,10 +46,7 @@ public class SemiNaiveEval {
 	/** The fact select. */
 	List<Integer> factSelect = new ArrayList<Integer>();
 
-	/** The parm map. */
-
 	/** The fact size. */
-	// HashMap<String, String> tempMap1 = new HashMap<>();
 	int factSize;
 
 	/** The fact push. */
@@ -59,13 +63,15 @@ public class SemiNaiveEval {
 
 	/** The prob arr. */
 	List<Double> probArr;
+
+	/** The iter. */
 	int iter = 1;
 
 	/**
 	 * Instantiates a new inference controller.
 	 *
 	 * @param program the program
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public SemiNaiveEval(ProgramModel program) throws IOException {
 		this.program = program;
@@ -83,7 +89,6 @@ public class SemiNaiveEval {
 				PredicateModel body = new PredicateModel();
 				body.setPredName(program.getRuleslist().get(i).getBody().get(j).getPredName());
 				body.setArity(program.getRuleslist().get(i).getBody().get(j).getArity());
-				// body.setProbability(program.getRuleslist().get(i).getBody().get(j).getProbability());
 				body.setArguments(program.getRuleslist().get(i).getBody().get(j).getArguments());
 				rule.setBody(body);
 			}
@@ -108,25 +113,13 @@ public class SemiNaiveEval {
 			i = 0;
 			j = 0;
 			k = 0;
-
-			// System.out.println("iteration number is" + iter);
-			// pwriter.println();
-			// pwriter.println("Iteration #: " + iter);
 			iter++;
 			matchCount = 0;
 			match(this.ruleFire.get(0).getBody().get(0), this.prevEdb.get(0).getFact());
 			this.finalise_Idb();
 
 			count = this.finalizeIteration();
-			/*
-			 * for (int l = 0; l < program.getFacts().size(); l++) { //
-			 * System.out.println(program.getFacts().get(l).getFact());
-			 * pwriter.println(program.getFacts().get(l).getFact());
-			 * 
-			 * 
-			 * }
-			 */
-		} while (count > 0);
+		} while ((count > 0) && (this.ruleFire.size() >= 1));
 		pwriter.println();
 		pwriter.println("Iteration #: " + iter);
 
@@ -150,11 +143,16 @@ public class SemiNaiveEval {
 	 */
 	public double disjunctionInd(double p1, double p2) {
 		double pro = (p1 + p2) - (p1 * p2);
-		// System.out.println("Inside disjunction disjuncted probability is: " + pro);
-
 		return pro;
 	}
 
+	/**
+	 * Disjunction max.
+	 *
+	 * @param p1 the p 1
+	 * @param p2 the p 2
+	 * @return the double
+	 */
 	public double disjunctionMax(double p1, double p2) {
 		double max;
 		if (p1 > p2) {
@@ -166,6 +164,13 @@ public class SemiNaiveEval {
 
 	}
 
+	/**
+	 * Cert change.
+	 *
+	 * @param p1 the p 1
+	 * @param p2 the p 2
+	 * @return true, if successful
+	 */
 	public boolean certChange(Double p1, Double p2) {
 
 		if (p1 - p2 > 0.01) {
@@ -199,6 +204,8 @@ public class SemiNaiveEval {
 
 	/**
 	 * Finalize iteration.
+	 *
+	 * @return the int
 	 */
 	public int finalizeIteration() {
 		count = 0;
@@ -261,32 +268,36 @@ public class SemiNaiveEval {
 				fact.setFact(finals.get(i).getFact());
 				prevEdb.add(fact);
 			}
-
+			boolean flag = false;
 			program.getIdb().clear();
-			// finals.clear();
 			ruleFire.clear();
-			// ruleFire = new ArrayList<RulesModel>();
 			for (int i = 0; i < program.getRuleslist().size(); i++) {
+				flag = true;
 				for (int j = 0; j < program.getRuleslist().get(i).getBody().size(); j++) {
-					for (int k = 0; k < finals.size(); k++) {
-						RulesModel rule = new RulesModel();
-						rule.setHead(program.getRuleslist().get(i).getHead());
-						if (program.getRuleslist().get(i).getBody().get(j).getPredName()
-								.equals(finals.get(k).getFact().getPredName())) {
-							for (int a = 0; a < program.getRuleslist().get(i).getBody().size(); a++) {
-								PredicateModel body = new PredicateModel();
-								body.setPredName(program.getRuleslist().get(i).getBody().get(a).getPredName());
-								body.setArity(program.getRuleslist().get(i).getBody().get(a).getArity());
-								// body.setProbability(program.getRuleslist().get(i).getBody().get(j).getProbability());
-								body.setArguments(program.getRuleslist().get(i).getBody().get(a).getArguments());
-								rule.setBody(body);
+					if (flag == true) {
+						for (int k = 0; k < finals.size(); k++) {
+							RulesModel rule = new RulesModel();
+							rule.setHead(program.getRuleslist().get(i).getHead());
+							if (program.getRuleslist().get(i).getBody().get(j).getPredName()
+									.equals(finals.get(k).getFact().getPredName())) {
+								for (int a = 0; a < program.getRuleslist().get(i).getBody().size(); a++) {
+									PredicateModel body = new PredicateModel();
+									body.setPredName(program.getRuleslist().get(i).getBody().get(a).getPredName());
+									body.setArity(program.getRuleslist().get(i).getBody().get(a).getArity());
+									body.setArguments(program.getRuleslist().get(i).getBody().get(a).getArguments());
+									rule.setBody(body);
 
+								}
+								ruleFire.add(rule);
+								flag = false;
+								break;
+							} else {
+								continue;
 							}
-							ruleFire.add(rule);
-							break;
-						} else {
-							continue;
 						}
+					} else {
+						flag = true;
+						break;
 					}
 				}
 			}
@@ -304,7 +315,6 @@ public class SemiNaiveEval {
 	 *
 	 * @param parmPred the parm pred
 	 * @param parmFact the parm fact
-	 * @param tempMap  the current hash
 	 * @return true, if successful
 	 */
 	public boolean predicateMatching(PredicateModel parmPred, PredicateModel parmFact) {
@@ -327,14 +337,12 @@ public class SemiNaiveEval {
 						}
 					}
 				} catch (NullPointerException e) {
-					// System.out.println("Our hash map is empty");
 					tempMap.put(parmPred.getArguments().get(i), parmFact.getArguments().get(i));
 
 				}
 			}
 			matchCount++;
 			probArr.add(parmFact.getProbability());
-			// tempMap1 = tempMap;
 			return true;
 		}
 	}
@@ -342,9 +350,8 @@ public class SemiNaiveEval {
 	/**
 	 * Infer IDB.
 	 *
-	 * @param head    the head
-	 * @param prob    the prob
-	 * @param hashMap the hash map
+	 * @param head the head
+	 * @param prob the prob
 	 */
 	public void inferIDB(PredicateModel head, List<Double> prob) {
 
@@ -360,7 +367,6 @@ public class SemiNaiveEval {
 		List<String> argum = new ArrayList<>();
 		Set<String> keySet = tempMap.keySet();
 		List<String> keys = new ArrayList<>(keySet);
-		// argum = tempFact.getFact().getArguments();
 		for (int a = 0; a < tempFact.getFact().getArguments().size(); a++) {
 			argum.add(tempFact.getFact().getArguments().get(a));
 		}
@@ -387,7 +393,6 @@ public class SemiNaiveEval {
 				if (tempFact.getFact().getPredName()
 						.equals(program.getIdb().get(i).getFact().getFact().getPredName())) {
 					factMatch = true;
-					// System.out.println(factMatch);
 				}
 				if (factMatch) {
 					argMatch = false;
@@ -395,7 +400,6 @@ public class SemiNaiveEval {
 						if (program.getIdb().get(i).getFact().getFact().getArguments().get(j)
 								.equals(tempFact.getFact().getArguments().get(j))) {
 							argMatch = true;
-							// System.out.println("bsdhfb");
 						} else {
 							argMatch = false;
 							break;
@@ -423,10 +427,8 @@ public class SemiNaiveEval {
 	/**
 	 * Match.
 	 *
-	 * @param p            the p
-	 * @param f            the f
-	 * @param tempMap      the current hash
-	 * @param previousHash the previous hash
+	 * @param p the p
+	 * @param f the f
 	 */
 	public void match(PredicateModel p, PredicateModel f) {
 		mat = this.predicateMatching(p, f);
@@ -441,18 +443,14 @@ public class SemiNaiveEval {
 					tempMap.clear();
 					tempMap.putAll(tempMap0);
 					factSelect.remove(factSelect.size() - 1);
-					// tempMap0.clear();
 					match(this.ruleFire.get(i).getBody().get(j), this.prevEdb.get(k).getFact());
 				} else {
 					if (j > 0) {
 						j = j - 1;
 						tempMap.clear();
-						// tempMap.putAll(tempMap0); //sp
 						tempMap0.clear();
 						probArr.remove(probArr.size() - 1);
-						// System.out.println(factSelect);
 						factSelect.remove(factSelect.size() - 1);
-						// System.out.println(factSelect);
 						k = factSelect.get(factSelect.size() - 1);
 						matchCount--;
 						if (k + 1 == factSize) {
@@ -483,11 +481,6 @@ public class SemiNaiveEval {
 								probArr.remove(probArr.size() - 1);
 								factSelect.remove(factSelect.size() - 1);
 								tempMap.clear();
-								// sp
-								/*
-								 * if(j==0) { tempMap0.clear(); } else { tempMap.putAll(tempMap0); }
-								 */
-								// sp
 								tempMap.putAll(tempMap0);
 								match(this.ruleFire.get(i).getBody().get(j), this.prevEdb.get(k).getFact());
 							}
@@ -524,13 +517,9 @@ public class SemiNaiveEval {
 				if (j > 0) {
 					j = j - 1;
 					tempMap.clear();
-					// tempMap.putAll(tempMap0);
-					tempMap0.clear(); // sp
-
+					tempMap0.clear();
 					k = factSelect.get(factSelect.size() - 1);
-					// System.out.println(factSelect+" "+k);
-
-					matchCount--; // can make it zero
+					matchCount--;
 					if (k + 1 == factSize) {
 						j = 0;
 						k = 0;

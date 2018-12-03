@@ -3,7 +3,6 @@ package kbs.problog.model;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RulesModel.
  */
@@ -11,10 +10,9 @@ public class RulesModel {
 
 	/** The head. */
 	PredicateModel head = new PredicateModel();
-	
+
 	/** The body. */
 	private List<PredicateModel> body = new ArrayList<PredicateModel>();
-	// private Double probability;
 
 	/**
 	 * Gets the head.
