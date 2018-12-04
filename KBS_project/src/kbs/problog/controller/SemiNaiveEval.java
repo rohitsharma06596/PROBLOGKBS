@@ -359,7 +359,7 @@ public class SemiNaiveEval {
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
-/*		double mulProb = 1;
+		/*double mulProb = 1;
 		for(int i=0;i<probability.length;i++)
 		{
 			mulProb = mulProb*probability[i];

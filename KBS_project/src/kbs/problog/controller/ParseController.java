@@ -163,7 +163,7 @@ public class ParseController {
 		//String choice = JOptionPane.showInputDialog("Please Enter 1 for Naive and 2 for Semi-Naive");
 		
 		NaiveEval naive = new NaiveEval(prog);
-	//	SemiNaiveEval seminaive = new SemiNaiveEval(prog);
+//		SemiNaiveEval seminaive = new SemiNaiveEval(prog);
 
 	}
 
