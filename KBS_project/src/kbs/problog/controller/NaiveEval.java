@@ -49,7 +49,7 @@ public class NaiveEval {
 
 	/** The prob arr. */
 	List<Double> probArr;
-	int iter = 1;
+	int iter = 0;
 
 	/**
 	 * Instantiates a new inference controller.
@@ -70,17 +70,15 @@ public class NaiveEval {
 			i = 0;
 			j = 0;
 			k = 0;
-
-			System.out.println("iteration number is" + iter);
 			iter++;
 			matchCount = 0;
 			match(program.getRuleslist().get(0).getBody().get(0), program.getFacts().get(0).getFact());
 			this.finalise_Idb();
 
 			count = this.finalizeIteration();
-			for (int l = 0; l < this.program.getFacts().size(); l++) {
+			/*for (int l = 0; l < this.program.getFacts().size(); l++) {
 				System.out.println(program.getFacts().get(l).getFact());
-			}
+			}*/
 
 		} while (count > 0);
 
@@ -95,7 +93,7 @@ public class NaiveEval {
 		writer.close();
 		pwriter.close();
 
-		System.out.println(program.getFacts().size());
+		System.out.println("Total Facts: "+program.getFacts().size());
 
 	}
 
@@ -140,7 +138,7 @@ public class NaiveEval {
 		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
-				double new_prob = disjunctionMax(program.getIdb().get(j).getProb_fact().get(i),
+				double new_prob = disjunctionInd(program.getIdb().get(j).getProb_fact().get(i),
 						program.getIdb().get(j).getProb_fact().get(i + 1));
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().remove(i);
@@ -210,7 +208,7 @@ public class NaiveEval {
 			finals.clear();
 
 		} else if (count == 0) {
-			System.out.println("The Fix point is found");
+			System.out.println("The Fix point is found at iteration: " + iter);
 
 		}
 		return count;
@@ -267,7 +265,7 @@ public class NaiveEval {
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
 		double mulProb = 1;
-		for(int i=0;i<probability.length;i++)
+		/*for(int i=0;i<probability.length;i++)
 		{
 			mulProb = mulProb*probability[i];
 		}
@@ -279,10 +277,10 @@ public class NaiveEval {
 		else
 		{
 			aggProb = mulProb;
-		}
-	/*	Arrays.sort(probability);
+		}*/
+		Arrays.sort(probability);
 		double minProb = probability[0];
-		double aggProb = minProb * head.getProbability();*/
+		double aggProb = minProb * head.getProbability();
 		tempFact.getFact().setProbability(aggProb);
 		IdbModel tempIdb1 = new IdbModel();
 

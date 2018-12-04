@@ -160,12 +160,11 @@ public class ParseController {
 		prog.setRuleslist(rules);
 		prog.setFacts(facts);
 		in_buf.close();
-		String choice = JOptionPane.showInputDialog("Please Enter 1 for Naive and 2 for Semi-Naive");
-		if (choice == "1") {
-			NaiveEval naive = new NaiveEval(prog);
-		} else {
-			SemiNaiveEval seminaive = new SemiNaiveEval(prog);
-		}
+		//String choice = JOptionPane.showInputDialog("Please Enter 1 for Naive and 2 for Semi-Naive");
+		
+		NaiveEval naive = new NaiveEval(prog);
+	//	SemiNaiveEval seminaive = new SemiNaiveEval(prog);
+
 	}
 
 }

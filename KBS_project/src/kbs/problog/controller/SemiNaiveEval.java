@@ -65,7 +65,7 @@ public class SemiNaiveEval {
 	List<Double> probArr;
 
 	/** The iter. */
-	int iter = 1;
+	int iter = 0;
 
 	/**
 	 * Instantiates a new inference controller.
@@ -124,14 +124,15 @@ public class SemiNaiveEval {
 		pwriter.println("Iteration #: " + iter);
 
 		for (int l = 0; l < this.program.getFacts().size(); l++) {
-			System.out.println(program.getFacts().get(l).getFact());
 			pwriter.println(program.getFacts().get(l).getFact());
 		}
 
 		writer.close();
 		pwriter.close();
-		System.out.println(program.getFacts().size());
-
+		System.out.println("Total facts: "+program.getFacts().size());
+		for (int l = 0; l < this.program.getFacts().size(); l++) {
+			System.out.println(program.getFacts().get(l).getFact());
+		}
 	}
 
 	/**
@@ -189,7 +190,7 @@ public class SemiNaiveEval {
 		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
-				double new_prob = disjunctionMax(program.getIdb().get(j).getProb_fact().get(i),
+				double new_prob = disjunctionInd(program.getIdb().get(j).getProb_fact().get(i),
 						program.getIdb().get(j).getProb_fact().get(i + 1));
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().remove(i);
@@ -304,7 +305,7 @@ public class SemiNaiveEval {
 			finals.clear();
 
 		} else if (count == 0) {
-			System.out.println("The Fix point is found");
+			System.out.println("The Fix point is found at iteration: "+ iter);
 
 		}
 		return count;
@@ -358,6 +359,20 @@ public class SemiNaiveEval {
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
+/*		double mulProb = 1;
+		for(int i=0;i<probability.length;i++)
+		{
+			mulProb = mulProb*probability[i];
+		}
+		double aggProb;
+		if(mulProb < head.getProbability())
+		{
+			aggProb = mulProb;
+		}
+		else
+		{
+			aggProb = mulProb;
+		}*/
 		Arrays.sort(probability);
 		double minProb = probability[0];
 		double aggProb = minProb * head.getProbability();
