@@ -266,9 +266,23 @@ public class NaiveEval {
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
-		Arrays.sort(probability);
+		double mulProb = 1;
+		for(int i=0;i<probability.length;i++)
+		{
+			mulProb = mulProb*probability[i];
+		}
+		double aggProb;
+		if(mulProb < head.getProbability())
+		{
+			aggProb = mulProb;
+		}
+		else
+		{
+			aggProb = mulProb;
+		}
+	/*	Arrays.sort(probability);
 		double minProb = probability[0];
-		double aggProb = minProb * head.getProbability();
+		double aggProb = minProb * head.getProbability();*/
 		tempFact.getFact().setProbability(aggProb);
 		IdbModel tempIdb1 = new IdbModel();
 
