@@ -148,7 +148,7 @@ public class SemiNaiveEval {
 	}
 
 	/**
-	 * Disjunction max.
+	 * Disjunction .
 	 *
 	 * @param p1 the p 1
 	 * @param p2 the p 2
@@ -359,7 +359,7 @@ public class SemiNaiveEval {
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
-		/*double mulProb = 1;
+		double mulProb = 1;
 		for(int i=0;i<probability.length;i++)
 		{
 			mulProb = mulProb*probability[i];
@@ -372,11 +372,11 @@ public class SemiNaiveEval {
 		else
 		{
 			aggProb = mulProb;
-		}*/
-		Arrays.sort(probability);
+		}
+		/*Arrays.sort(probability);
 		double minProb = probability[0];
 		double aggProb = minProb * head.getProbability();
-		tempFact.getFact().setProbability(aggProb);
+		tempFact.getFact().setProbability(aggProb);*/
 		IdbModel tempIdb1 = new IdbModel();
 
 		List<String> argum = new ArrayList<>();
