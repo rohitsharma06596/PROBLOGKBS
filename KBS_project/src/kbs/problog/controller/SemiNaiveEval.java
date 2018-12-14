@@ -51,6 +51,8 @@ public class SemiNaiveEval {
 
 	/** The fact push. */
 	List<String> factPush = new ArrayList<String>();
+	
+	HashMap<Integer, IdbModel>bestSoFar = new HashMap<>();
 
 	/** The k. */
 	int i, j, k = 0;
@@ -190,7 +192,7 @@ public class SemiNaiveEval {
 		for (int j = 0; j < program.getIdb().size(); j++) {
 			int i = 0;
 			while (program.getIdb().get(j).getProb_fact().size() > 1) {
-				double new_prob = disjunctionInd(program.getIdb().get(j).getProb_fact().get(i),
+				double new_prob = disjunctionMax(program.getIdb().get(j).getProb_fact().get(i),
 						program.getIdb().get(j).getProb_fact().get(i + 1));
 				program.getIdb().get(j).getProb_fact().remove(i);
 				program.getIdb().get(j).getProb_fact().remove(i);
@@ -359,7 +361,7 @@ public class SemiNaiveEval {
 		FactModel tempFact = new FactModel();
 		tempFact.setFact(head);
 		Double[] probability = prob.toArray(new Double[prob.size()]);
-		double mulProb = 1;
+		/*double mulProb = 1;
 		for(int i=0;i<probability.length;i++)
 		{
 			mulProb = mulProb*probability[i];
@@ -372,11 +374,11 @@ public class SemiNaiveEval {
 		else
 		{
 			aggProb = mulProb;
-		}
-		/*Arrays.sort(probability);
+		}*/
+		Arrays.sort(probability);
 		double minProb = probability[0];
-		double aggProb = minProb * head.getProbability();
-		tempFact.getFact().setProbability(aggProb);*/
+		double aggProb = minProb * head.getProbability();    
+		tempFact.getFact().setProbability(aggProb);
 		IdbModel tempIdb1 = new IdbModel();
 
 		List<String> argum = new ArrayList<>();
